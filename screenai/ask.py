@@ -588,7 +588,7 @@ def _call_gemini(prompt: str) -> str:
             "it in Settings to enable the free cloud engine.")
     import re as _re
     import time as _time
-    model = s.get("gemini_model", "gemini-2.5-flash")
+    model = s.get("gemini_model", "gemini-3.5-flash")
     payload = _json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"temperature": 0.2, "maxOutputTokens": 700},

@@ -20,7 +20,7 @@ DEFAULT_SETTINGS = {
     "disabled_engines": [],          # engines to skip in "auto" (e.g. ["claude"] to ignore Claude)
     "ollama_model": "llama3.1:8b",   # digest needs a long context window
     "gemini_api_key": "",            # free key from aistudio.google.com/apikey
-    "gemini_model": "gemini-2.5-flash",
+    "gemini_model": "gemini-3.5-flash",
     # Any paid OpenAI-compatible API the user already has (OpenAI, DeepSeek, Groq,
     # OpenRouter, Mistral…). Never billed unless the user explicitly configures it.
     "custom_api": {"base_url": "", "api_key": "", "model": "", "label": ""},
