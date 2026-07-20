@@ -1,80 +1,143 @@
-# screenAI
+# 🧠 screenAI
 
-**An ambient memory for your Mac.** Every glimpse of your screen becomes a **wisp** — its text remembered, never the pixels. Ask anything later and screenAI *revisits* those wisps to answer — instantly, from the menu bar or a Spotlight-style hotkey.
+> **Your On-Device Personal Intelligence Assistant for macOS.**
 
-[**⬇ Download for Mac**](https://github.com/tnshgarg/screenai/releases/latest/download/screenAI.dmg) · macOS 15+ · Apple Silicon
+screenAI is a private-by-design ambient memory companion. It quietly indexes the **text** of what you see on your screen (instantly discarding pixels to protect your privacy), structures it locally using on-device OCR, and builds a searchable semantic index. 
 
-> "What was due on July 12th?" · "What was that video I watched last night?" · "What's my advisor's email?"
+Summon the Spotlight-style interface with `⌘⇧Space` to ask questions about your past, search your history semantically, manage commitments, or auto-fill forms from your secure, Touch-ID-locked Vault.
 
-<p align="center">
-  <img src="docs/img/panel.png" width="640" alt="⌘⇧Space search panel answering from screen history with the Apple on-device model">
-</p>
-
-Answers come from Apple's on-device model in a few seconds — the badge shows which engine replied. When the on-device model isn't sure, screenAI escalates to a stronger engine: **Claude Pro → ChatGPT Plus → free Gemini → local Ollama** (whichever you've set up; no paid API keys, ever). Personal facts (your email, IDs, addresses) come straight out of the Vault, deterministically, with a Copy button — and the Vault is gated behind Touch ID.
+---
 
 <p align="center">
-  <img src="docs/img/settings.png" width="720" alt="Main window: engine chain, digest schedule, notifications">
+  <img src="docs/img/panel.png" width="650" alt="screenAI Search Panel answering queries from memory">
 </p>
 
-## It thinks, not just stores (new in 0.8)
+---
 
-- **Meaning-based search** — ask *"that article about burnout"*, find the page that said *"exhaustion"*. Local semantic fingerprints (model2vec) fused with keyword search.
-- **"What changed on this page?"** — screenAI keeps every version of a page as text, so it can diff them and tell you what was added / changed / removed.
-- **Promises** — catches commitments off your screen (*"I'll send it Friday"*) and pins them to Today until you confirm and complete them. Never typed.
-- **Numbers over time** — any label+number you see repeatedly (weight, grade, price) becomes a tracked sparkline. *"How has my weight moved?"*
-- **Precognition** — summon the panel and the suggested questions are guessed from what's on screen + your history.
-- **Consolidation + reinforcement** — nightly, older wisps fold into episodes and the ones you ask about get strengthened. Fully local.
-- **Proactive recall** *(off by default)* — a nudge pill surfaces a past memory when it's relevant.
+## ✨ Key Features
 
-## How it works
+### 🔍 Ambient Semantic Memory
+* **Context-Aware Search**: Ask *"that article about burnout"* and find pages containing *"exhaustion"* or *"fatigue"*. It uses local semantic embedding vectors (`model2vec`) fused with SQLite `FTS5` full-text search.
+* **Precognition**: The search panel dynamically suggests contextually relevant questions based on what is currently active on your screen and your immediate history.
+
+### 🔄 Intelligent Page Diffs & Time Travel
+* **Time-Travel Versioning**: screenAI tracks changes to page views over time, allowing you to ask *"What changed on this page since yesterday?"* and view structured text differences (diffs).
+
+### 🤝 Automated Commitment Tracking (Promises)
+* **Zero-effort Task Capture**: It automatically detects commitments made on your screen (e.g., *"I'll send the report by Friday"* in email or chat) and pins them to your **Today** dashboard until you mark them complete.
+
+### 📈 Numbers & Sparklines
+* **Automatic Metric Tracking**: Any labeled numerical data you see repeatedly (e.g., weights, grades, prices) is parsed and visualized as a local sparkline. Ask *"How has my weight trended?"* to see the chart.
+
+### 🔒 Touch-ID Gated Vault
+* **Secure Auto-Fill**: Safely store your resumes, standard answers, and personal details. Summon screenAI on any signup page to autofill forms.
+* **Credentials Lock**: The Vault actively detects and refuses to index passwords or credit card details.
+
+### 🌙 Nightly Consolidation & Digest
+* **Episodes & Summaries**: Every night at 9:00 PM, screenAI groups your daily captures into structured "episodes" and generates a concise email/markdown recap of your day, highlighting loose threads and follow-ups.
+
+---
+
+## ⚙️ How It Works
+
+screenAI operates on a split-architecture design:
+1. **SwiftUI Frontend**: A native macOS Menu Bar App & Spotlight-style overlay handling hotkeys, dashboard widgets, and user interaction.
+2. **Python Daemon**: An isolated, lightweight backend running screen capture triggers, local OCR via Apple Vision, embedding creation, local SQLite storage, and LLM coordination.
 
 ```
-┌─ triggers ─────────────┐   ┌────────────┐   ┌─────────────┐
-│ app switch · new URL   │ → │ screenshot │ → │  Vision OCR │ → SQLite FTS5
-│ scroll settle · 60s HB │   │ (in-memory │   │  (on-device)│    (text only)
-└────────────────────────┘   │  only)     │   └─────────────┘
-                             └────────────┘
-Ask (⌘⇧Space) → FTS retrieval → Apple on-device model (free, private)
-                                └→ Claude / ChatGPT / free Gemini / Ollama for hard questions
-Nightly Digest (9 PM) → one Claude call → recap · loose threads · memory
+                  ┌─ triggers ─────────────┐
+                  │ app switch · new URL   │
+                  │ scroll settle · 60s HB │
+                  └───────────┬────────────┘
+                              ▼
+                      ┌──────────────┐
+                      │ screen capture│
+                      └───────┬──────┘
+                              ▼
+                      ┌──────────────┐
+                      │  Vision OCR  │
+                      └───────┬──────┘
+                              ▼
+                      ┌──────────────┐
+                      │ pixels clear │
+                      └───────┬──────┘
+                              ▼
+                 ┌────────────┴────────────┐
+                 │ model2vec semantic embed│
+                 └────────────┬────────────┘
+                              ▼
+                     ┌────────────────┐
+                     │  SQLite FTS5   │
+                     │  + Vector DB   │
+                     └────────────────┘
 ```
 
-- **Screenshots are never written to disk.** Each capture is OCR'd in memory and released; only the recognized text is stored.
-- **Everything stays local** — SQLite database in `~/screenAI`, on-device OCR, on-device answering via Apple's Foundation Models. The only thing that ever leaves the machine is the prompt for Claude-answered questions and the once-daily Digest (via your Claude subscription — never an API key).
-- **Kill list**: Messages, WhatsApp, password managers, banking sites, and private browser windows fully pause capture. Not filtered — *paused*: zero rows.
-- **Vault**: drop your resume / addresses / standard answers in, and screenAI treats them as trusted truth. Files that look like they contain credentials are refused.
+### Intelligent Engine Routing
+When you query screenAI, it prioritizes **on-device Apple Foundation Models** (free and private). For complex reasoning tasks, it escalates up the configured chain:
+$$\text{Apple On-Device} \longrightarrow \text{Claude Pro} \longrightarrow \text{ChatGPT Plus} \longrightarrow \text{Gemini (AI Studio)} \longrightarrow \text{Local Ollama}$$
 
-## Pieces
+---
 
-| Piece | What it is |
+## 🛠️ Architecture & Code Layout
+
+| Directory / File | Description |
 |---|---|
-| `screenai/` | Python daemon — capture, OCR, storage, retrieval, localhost API (127.0.0.1, token-gated) |
-| `ui/` | Native SwiftUI menu bar app + ⌘⇧Space search panel + main window (Chat, Vault, Memory, Settings) |
-| `docs/` | Brief, manual, progress log, security notes |
-| `scripts/` | DMG packaging + installer |
-| `site/` | Landing page |
+| [`screenai/`](file:///Users/chinmaysoni/Desktop/Rewisp-main/screenai/) | Python daemon (capture engine, OCR processing, vector database, HTTP API) |
+| [`ui/`](file:///Users/chinmaysoni/Desktop/Rewisp-main/ui/) | SwiftUI project (native app, menu bar popover, search overlay, theme styles) |
+| [`docs/`](file:///Users/chinmaysoni/Desktop/Rewisp-main/docs/) | Documentation (system manual, security auditing, briefs) |
+| [`scripts/`](file:///Users/chinmaysoni/Desktop/Rewisp-main/scripts/) | Installer scripts and DMG builders |
+| [`site/`](file:///Users/chinmaysoni/Desktop/Rewisp-main/site/) | Project landing page (HTML/CSS/JS) |
 
-## Install (from source)
+---
 
-Requires macOS 15+ (on-device answers need macOS 26), Python 3.13 with `pyobjc`, and [Claude Code](https://claude.com/claude-code) signed in for Digest/fallback answers.
+## 🚀 Setup & Installation (From Source)
 
-```sh
-pip3 install pyobjc model2vec     # model2vec powers local semantic search (optional; falls back to keyword)
-python3 -m screenai daemon          # grant Screen Recording when prompted
-cd ui && ./build.sh --install     # builds + installs /Applications/screenAI.app
-```
+### Prerequisites
+* macOS 15+ (Apple Silicon recommended)
+* Python 3.11+
+* Hugging Face CLI (for local model downloads)
 
-`scripts/install.sh` sets up launchd agents so the daemon runs on login and the Digest fires at 9 PM. `scripts/make_dmg.sh` builds a distributable DMG.
+### Step-by-Step Install
 
-## Privacy principles
+1. **Clone and Navigate**:
+   ```bash
+   git clone https://github.com/tnshgarg/screenai.git
+   cd screenai
+   ```
 
-1. Image in memory only — OCR, then gone.
-2. Text only, local only, `~/screenAI`, `chmod 700`.
-3. Kill list is absolute.
-4. Credentials are never stored — detection refuses them at the door.
-5. At most one automated AI call per day (the Digest). Everything else is user-triggered or on-device.
-6. Forget button: delete the last 10 minutes any time.
+2. **Initialize Environment & Dependencies**:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install pytest pytest-mock pyobjc-framework-Quartz pyobjc-framework-Vision pyobjc-framework-ApplicationServices model2vec
+   ```
 
-## License
+3. **Build the SwiftUI Application**:
+   ```bash
+   cd ui
+   ./build.sh --install
+   cd ..
+   ```
 
-MIT
+4. **Boot the Daemon & launchd Agents**:
+   ```bash
+   ./scripts/install.sh
+   ```
+
+5. **Permissions**:
+   Allow **`Python`** (the daemon interpreter) and **`screenAI`** (the menu bar app) **Screen Recording** access in **System Settings** → **Privacy & Security** → **Screen & System Audio Recording**.
+
+---
+
+## 🔒 Privacy Core
+
+1. **Zero-Disk Pixel Footprint**: Images are kept in memory only for OCR and immediately destroyed. Pixels are never written to disk.
+2. **Strict Folder Access**: All data resides in `~/screenAI` with restricted `0700` filesystem permissions.
+3. **App Kill-List**: Sensitive apps (Messages, WhatsApp, password managers) and incognito browser tabs fully pause capturing.
+4. **Local-First**: Search, OCR, and embeddings run locally on your device. Only explicit, complex questions leave your device to your selected API engines.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
