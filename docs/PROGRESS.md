@@ -104,13 +104,13 @@
 
 - [x] Onboarding flow (first launch): welcome → privacy → permissions with live
       status checks + Open Settings buttons → tutorial. Screenshot-verified. (2026-07-08)
-- [x] GitHub repo: public https://github.com/chinmaysoni/screenAI, sole collaborator
+- [x] GitHub repo: public https://github.com/tnshgarg/screenai, sole collaborator
       chinmaysoni, README written (2026-07-08)
 - [x] Auto-update: app checks GitHub Releases daily, "Get update" banner in the
       popover downloads the new DMG. v0.1.0 released with DMG asset. (2026-07-08)
 - [x] DMG packaging: scripts/make_dmg.sh bundles the daemon inside the app +
       "Install screenAI.command" (launchd setup, pyobjc check). dist/screenAI-0.1.0.dmg built. (2026-07-08)
-- [x] Landing page live at https://chinmaysoni.github.io/screenAI/ (site/, GitHub
+- [x] Landing page live at https://tnshgarg.github.io/screenai/ (site/, GitHub
       Pages via Actions, typed-demo hero, privacy + how-it-works sections) (2026-07-08)
 - [x] Export everything: `screenai export` / Settings button → ~/screenAI/export/
       (summaries.md, chats.md, captures.csv, memory.md). Verified: 577 captures,

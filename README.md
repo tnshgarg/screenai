@@ -2,7 +2,7 @@
 
 **An ambient memory for your Mac.** Every glimpse of your screen becomes a **wisp** — its text remembered, never the pixels. Ask anything later and screenAI *revisits* those wisps to answer — instantly, from the menu bar or a Spotlight-style hotkey.
 
-[**⬇ Download for Mac**](https://github.com/chinmaysoni/screenAI/releases/latest/download/screenAI.dmg) · macOS 15+ · Apple Silicon
+[**⬇ Download for Mac**](https://github.com/tnshgarg/screenai/releases/latest/download/screenAI.dmg) · macOS 15+ · Apple Silicon
 
 > "What was due on July 12th?" · "What was that video I watched last night?" · "What's my advisor's email?"
 

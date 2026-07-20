@@ -92,7 +92,7 @@ Minutes per app, weekly report, computed locally from timestamps.
 `python3 -m screenai mcp` exposes memory to Claude Desktop / Claude Code / Cursor / VS Code / Windsurf / Gemini CLI as five **read-only** tools. Local stdio (no network listener), never calls a cloud engine, Vault excluded by default. A top-level "Connect" tab has a live connection banner, per-client setup (one-click for Claude Desktop), and an animated demo.
 
 ### Distribution
-DMG (daemon bundled inside the app + installer), `/Applications`, launchd agents (capture always-on + 9 PM digest), auto-update via GitHub Releases. Landing page at https://chinmaysoni.github.io/screenAI/ (GitHub Pages; html/css/js with live in-browser feature demos).
+DMG (daemon bundled inside the app + installer), `/Applications`, launchd agents (capture always-on + 9 PM digest), auto-update via GitHub Releases. Landing page at https://tnshgarg.github.io/screenai/ (GitHub Pages; html/css/js with live in-browser feature demos).
 
 ## 5. Status & roadmap
 
