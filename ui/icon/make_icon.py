@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Rewisp.icns — FINAL: tapered white wisp stroke on graphite squircle.
+"""Generate screenAI.icns — FINAL: tapered white wisp stroke on graphite squircle.
 (User-selected 2026-07-08: 'wisp' concept, inverted colors.)
 Pure CoreGraphics — no image assets, fully reproducible."""
 
@@ -74,7 +74,7 @@ def save_png(image, path: Path):
 def main():
     img = draw()
     with tempfile.TemporaryDirectory() as td:
-        iconset = Path(td) / "Rewisp.iconset"
+        iconset = Path(td) / "screenAI.iconset"
         iconset.mkdir()
         master = Path(td) / "master.png"
         save_png(img, master)
@@ -86,9 +86,9 @@ def main():
                                 "--out", str(iconset / name)],
                                check=True, capture_output=True)
         subprocess.run(["iconutil", "-c", "icns", str(iconset),
-                        "-o", str(OUT / "Rewisp.icns")], check=True)
+                        "-o", str(OUT / "screenAI.icns")], check=True)
     save_png(img, OUT / "icon_preview.png")
-    print("wrote Rewisp.icns + icon_preview.png")
+    print("wrote screenAI.icns + icon_preview.png")
 
 
 if __name__ == "__main__":

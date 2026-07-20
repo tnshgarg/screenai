@@ -1,4 +1,4 @@
-"""The Forgetting Model — Rewisp learns what YOU forget, and rescues it first.
+"""The Forgetting Model — screenAI learns what YOU forget, and rescues it first.
 
 Every failed search is a documented forgetting event: you typed "that pasta
 place brooklyn", got nothing useful, rephrased — your brain just lost something
@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 
 from . import config, db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 # Population priors for stability S (days until recall drops to ~37%), per bin.
 # Diary-study ordering: names go first, numbers fast, places stick longer.

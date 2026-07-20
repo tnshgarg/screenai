@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-// Top-level "Connect" tab — a full page for wiring Rewisp's memory into AI agents.
+// Top-level "Connect" tab — a full page for wiring screenAI's memory into AI agents.
 struct ConnectTab: View {
     var body: some View {
         ScrollView {
@@ -18,13 +18,13 @@ struct ConnectTab: View {
 // The connector content: live status, three setup paths (one-click for Desktop),
 // an animated demo, test prompts, and the privacy guarantees.
 struct ConnectorSection: View {
-    @State private var status: RewispAPI.MCPStatus?
+    @State private var status: screenAIAPI.MCPStatus?
     @State private var selected = "Claude Desktop"
     @State private var installedFlash = false
     @State private var exposeVault = false
 
-    private var clients: [RewispAPI.MCPClient] { status?.clients ?? [] }
-    private var current: RewispAPI.MCPClient? {
+    private var clients: [screenAIAPI.MCPClient] { status?.clients ?? [] }
+    private var current: screenAIAPI.MCPClient? {
         clients.first { $0.name == selected } ?? clients.first
     }
 
@@ -47,7 +47,7 @@ struct ConnectorSection: View {
     }
 
     @MainActor private func refresh() async {
-        if let s = try? await RewispAPI.get("mcp-status", as: RewispAPI.MCPStatus.self) {
+        if let s = try? await screenAIAPI.get("mcp-status", as: screenAIAPI.MCPStatus.self) {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { status = s }
             exposeVault = s.expose_vault ?? false
         }
@@ -124,7 +124,7 @@ struct ConnectorSection: View {
         }
     }
 
-    @ViewBuilder private func clientSetup(_ c: RewispAPI.MCPClient) -> some View {
+    @ViewBuilder private func clientSetup(_ c: screenAIAPI.MCPClient) -> some View {
         Divider().opacity(0.4).padding(.vertical, 2)
         switch c.kind {
         case "note":
@@ -138,7 +138,7 @@ struct ConnectorSection: View {
                 Text(c.note).font(.callout).foregroundStyle(.secondary)
                 Button {
                     Task { @MainActor in
-                        _ = try? await RewispAPI.post("mcp/install-desktop")
+                        _ = try? await screenAIAPI.post("mcp/install-desktop")
                         withAnimation(.spring) { installedFlash = true }
                         await refresh()
                     }
@@ -191,7 +191,7 @@ struct ConnectorSection: View {
             .controlSize(.large).buttonStyle(.borderedProminent)
     }
 
-    private func manualButtons(_ c: RewispAPI.MCPClient) -> some View {
+    private func manualButtons(_ c: screenAIAPI.MCPClient) -> some View {
         HStack(spacing: 10) {
             copyButton(c.text)
             Button { downloadConfig(named: c.name.contains("Code") ? "config.json" : "mcp.json", text: c.text) } label: {
@@ -201,7 +201,7 @@ struct ConnectorSection: View {
         }
     }
 
-    @ViewBuilder private func fileHint(_ c: RewispAPI.MCPClient) -> some View {
+    @ViewBuilder private func fileHint(_ c: screenAIAPI.MCPClient) -> some View {
         if !c.location.isEmpty {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Image(systemName: "arrow.turn.down.right").font(.caption2).foregroundStyle(.tertiary)
@@ -235,7 +235,7 @@ struct ConnectorSection: View {
     private var testCard: some View {
         Card {
             CardHeader(title: "Test the connection", symbol: "checkmark.seal.fill")
-            Text("Once set up, ask your agent something only Rewisp knows:")
+            Text("Once set up, ask your agent something only screenAI knows:")
                 .font(.callout).foregroundStyle(.secondary)
             ForEach(["What did I work on yesterday?",
                      "What have I promised this week?",
@@ -267,7 +267,7 @@ struct ConnectorSection: View {
             }
             .toggleStyle(.switch)
             .onChange(of: exposeVault) {
-                Task { _ = try? await RewispAPI.post("settings", body: ["mcp_expose_vault": exposeVault]) }
+                Task { _ = try? await screenAIAPI.post("settings", body: ["mcp_expose_vault": exposeVault]) }
             }
         }
     }
@@ -298,7 +298,7 @@ private struct StepRow: View {
     }
 }
 
-// A looping mini demo: an agent asks, Rewisp's tool lights up, the answer flows.
+// A looping mini demo: an agent asks, screenAI's tool lights up, the answer flows.
 private struct ConnectorDemo: View {
     @State private var phase = 0   // 0 ask, 1 tool, 2 answer
     private let tools = ["search_memory", "get_promises", "get_context"]
@@ -315,11 +315,11 @@ private struct ConnectorDemo: View {
                     .background(Theme.accent.opacity(0.9), in: RoundedRectangle(cornerRadius: 14))
                     .foregroundStyle(.white)
             }
-            // rewisp tool call (always present; fades from dim to lit)
+            // screenai tool call (always present; fades from dim to lit)
             HStack(spacing: 8) {
                 Image(systemName: "point.3.filled.connected.trianglepath.dotted")
                     .foregroundStyle(Theme.wisp)
-                Text("rewisp").font(.caption.weight(.semibold))
+                Text("screenai").font(.caption.weight(.semibold))
                 Text("· \(tools[toolIdx])").font(.caption.monospaced()).foregroundStyle(.secondary)
                 if phase == 1 { ProgressView().controlSize(.small).scaleEffect(0.7) }
                 Spacer()

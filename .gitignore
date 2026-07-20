@@ -1,5 +1,5 @@
 # build products
-ui/Rewisp.app/
+ui/screenAI.app/
 dist/
 
 # python
@@ -20,3 +20,5 @@ todo.md
 # headless on-device bench bridge (build artifact)
 ui/AppleAsk
 submission-assets/
+.venv/
+

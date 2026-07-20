@@ -24,7 +24,7 @@ import re
 
 from . import db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 # ── source gating ─────────────────────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ _BLOCKED_APPS = {
     "antigravity ide", "claude", "gemini", "chatgpt", "cursor", "code",
     "visual studio code", "xcode", "terminal", "iterm2", "warp", "dock",
     "finder", "system settings", "activity monitor", "screen sharing",
-    "zoom.us", "lockdown browser", "health", "rewisp",
+    "zoom.us", "lockdown browser", "health", "screenai",
 }
 
 # Inside a browser, the URL decides.

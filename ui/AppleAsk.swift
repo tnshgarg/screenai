@@ -1,5 +1,5 @@
 // Headless bridge to Apple's on-device Foundation Model, so the benchmark
-// (rewisp/bench.py) can call the exact same model the app uses.
+// (screenai/bench.py) can call the exact same model the app uses.
 // Reads a prompt on stdin, prints the model's answer on stdout.
 //   swiftc -O -parse-as-library -target arm64-apple-macosx26.0 AppleAsk.swift \
 //       -Xlinker -weak_framework -Xlinker FoundationModels -o AppleAsk

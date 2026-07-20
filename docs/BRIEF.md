@@ -1,18 +1,18 @@
-# Rewisp — Project Brief (current state)
+# screenAI — Project Brief (current state)
 
-An ambient memory for macOS. Rewisp quietly captures the **text** of what you see, keeps it local, and lets you ask your past anything. Private by construction — screenshots never touch disk.
+An ambient memory for macOS. screenAI quietly captures the **text** of what you see, keeps it local, and lets you ask your past anything. Private by construction — screenshots never touch disk.
 
-Owner: Yashmit. Single user, his Mac only. Nothing leaves the machine except the prompt of a question or the nightly digest, and only to the engine you choose.
+Owner: Chinmay Soni. Single user, his Mac only. Nothing leaves the machine except the prompt of a question or the nightly digest, and only to the engine you choose.
 
 **Current version: v0.11.0** (14 releases across 2026-07-08 → 07-19). In daily use (~180+ wisps/day, 3800+ wisps). v0.8 shipped the "intelligent memory" cycle (semantic search, delta, promises, numbers, precognition, dream/reinforcement, nudges); v0.9 was the precision cycle — research-grounded refinement of all of it, closing the promise loop with due-day reminders and failed-search near-miss rescue. 108 tests.
 
-> This file describes what Rewisp *is today*. For the build timeline and per-task history, see `PROGRESS.md`. For the manual, `MANUAL.md`. For the threat model, `SECURITY.md`.
+> This file describes what screenAI *is today*. For the build timeline and per-task history, see `PROGRESS.md`. For the manual, `MANUAL.md`. For the threat model, `SECURITY.md`.
 
 ---
 
 ## 1. Product summary
 
-Rewisp captures a screenshot when something meaningful changes, OCRs it locally with Apple Vision, stores the **text only**, and discards the image in memory. A menu bar app + a `⌘⇧Space` search panel let you ask questions about your own screen history, a personal-info Vault, and a learned memory file. A nightly digest summarizes the day and surfaces loose threads.
+screenAI captures a screenshot when something meaningful changes, OCRs it locally with Apple Vision, stores the **text only**, and discards the image in memory. A menu bar app + a `⌘⇧Space` search panel let you ask questions about your own screen history, a personal-info Vault, and a learned memory file. A nightly digest summarizes the day and surfaces loose threads.
 
 Tagline: *"Your Mac, with a memory."*
 
@@ -37,11 +37,11 @@ Capture (Python daemon) --> Store (SQLite FTS5) --> Digest (1 cloud call/night)
                         (AX, never submit)      + ⌘⇧Space search panel
 ```
 
-- **Capture daemon** — Python/pyobjc, 0.5s poll. Smart triggers: app-switch, URL-change (Chromium family + Safari via AppleScript, Firefox title-only), scroll-settle, heartbeat. Idle guard + thumbnail-diff dedupe. Self-capture excluded (won't index Rewisp's own UI).
+- **Capture daemon** — Python/pyobjc, 0.5s poll. Smart triggers: app-switch, URL-change (Chromium family + Safari via AppleScript, Firefox title-only), scroll-settle, heartbeat. Idle guard + thumbnail-diff dedupe. Self-capture excluded (won't index screenAI's own UI).
 - **OCR** — Apple Vision, max-recall (revision 3 + auto language, tiled 2×2 pass, reading-order reassembly). Image lives only in memory.
 - **Store** — SQLite with FTS5 (bm25 rank, WAL). Retention 6 months for captures/chats; summaries + memory kept forever. Daily local backup.
-- **UI** — native SwiftUI (16 source files), talks to the daemon over a token-gated localhost API (`127.0.0.1:43117`, `X-Rewisp-Token`).
-- **Isolation** — Accessibility calls crash Chromium, so form detection runs in a crash-isolated `rewisp axhelper` subprocess; the daemon never touches AX directly.
+- **UI** — native SwiftUI (16 source files), talks to the daemon over a token-gated localhost API (`127.0.0.1:43117`, `X-ScreenAI-Token`).
+- **Isolation** — Accessibility calls crash Chromium, so form detection runs in a crash-isolated `screenai axhelper` subprocess; the daemon never touches AX directly.
 
 ## 4. Feature set
 
@@ -89,10 +89,10 @@ Minutes per app, weekly report, computed locally from timestamps.
 - **Onboarding** — welcome → privacy → permissions → Vault setup → animated demos.
 
 ### Connect agents (MCP)
-`python3 -m rewisp mcp` exposes memory to Claude Desktop / Claude Code / Cursor / VS Code / Windsurf / Gemini CLI as five **read-only** tools. Local stdio (no network listener), never calls a cloud engine, Vault excluded by default. A top-level "Connect" tab has a live connection banner, per-client setup (one-click for Claude Desktop), and an animated demo.
+`python3 -m screenai mcp` exposes memory to Claude Desktop / Claude Code / Cursor / VS Code / Windsurf / Gemini CLI as five **read-only** tools. Local stdio (no network listener), never calls a cloud engine, Vault excluded by default. A top-level "Connect" tab has a live connection banner, per-client setup (one-click for Claude Desktop), and an animated demo.
 
 ### Distribution
-DMG (daemon bundled inside the app + installer), `/Applications`, launchd agents (capture always-on + 9 PM digest), auto-update via GitHub Releases. Landing page at https://yashmitb.github.io/Rewisp/ (GitHub Pages; html/css/js with live in-browser feature demos).
+DMG (daemon bundled inside the app + installer), `/Applications`, launchd agents (capture always-on + 9 PM digest), auto-update via GitHub Releases. Landing page at https://chinmaysoni.github.io/screenAI/ (GitHub Pages; html/css/js with live in-browser feature demos).
 
 ## 5. Status & roadmap
 
@@ -103,4 +103,4 @@ DMG (daemon bundled inside the app + installer), `/Applications`, launchd agents
 - macOS-only (cross-platform deferred).
 
 **Next (see `todo.md`):**
-- Train a custom "Rewisp AI model" (~week-long effort).
+- Train a custom "screenAI AI model" (~week-long effort).

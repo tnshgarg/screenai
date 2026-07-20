@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from rewisp import db, dejavu, embed
+from screenai import db, dejavu, embed
 
 
 def _add_old(conn, app, page_key, text, vec, days_ago):

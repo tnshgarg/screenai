@@ -7,7 +7,7 @@ import SwiftUI
 @MainActor
 final class UpdateChecker: ObservableObject {
     static let shared = UpdateChecker()
-    static let repo = "yashmitb/Rewisp"
+    static let repo = "chinmaysoni/screenAI"
 
     @Published var latestVersion: String?
     @Published var downloadURL: URL?

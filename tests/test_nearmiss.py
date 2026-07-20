@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from rewisp import ask, db, embed
+from screenai import ask, db, embed
 
 
 class TestNearMisses:

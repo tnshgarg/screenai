@@ -1,17 +1,17 @@
 import SwiftUI
 
 // Promises pinned to the Today view as little paper slips. You never type them —
-// Rewisp catches "I'll send it Friday" off your screen and holds it. New ones are
+// screenAI catches "I'll send it Friday" off your screen and holds it. New ones are
 // Pending (one tap to confirm); confirmed ones can be marked Done with a crumple.
 // Two lanes: what you owe, and what you're waiting on. Overdue slips glow red.
 
 struct PromisesCard: View {
-    @State private var pending: [RewispAPI.Promise] = []
-    @State private var active: [RewispAPI.Promise] = []
+    @State private var pending: [screenAIAPI.Promise] = []
+    @State private var active: [screenAIAPI.Promise] = []
     @State private var gone: Set<Int> = []          // locally removed (mid-animation)
 
-    private var owe: [RewispAPI.Promise] { (pending + active).filter { $0.who == "me" && !gone.contains($0.id) } }
-    private var waiting: [RewispAPI.Promise] { (pending + active).filter { $0.who == "them" && !gone.contains($0.id) } }
+    private var owe: [screenAIAPI.Promise] { (pending + active).filter { $0.who == "me" && !gone.contains($0.id) } }
+    private var waiting: [screenAIAPI.Promise] { (pending + active).filter { $0.who == "them" && !gone.contains($0.id) } }
 
     var body: some View {
         // NOTE: the poll .task lives on this always-present VStack, NOT on a
@@ -40,7 +40,7 @@ struct PromisesCard: View {
         }
     }
 
-    private func lane(_ title: String, _ items: [RewispAPI.Promise]) -> some View {
+    private func lane(_ title: String, _ items: [screenAIAPI.Promise]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
                 .font(.caption2.weight(.semibold)).foregroundStyle(.tertiary)
@@ -55,13 +55,13 @@ struct PromisesCard: View {
     }
 
     @MainActor private func reload() async {
-        if let r = try? await RewispAPI.get("promises", as: RewispAPI.Promises.self) {
+        if let r = try? await screenAIAPI.get("promises", as: screenAIAPI.Promises.self) {
             pending = r.pending; active = r.active
         }
     }
 
     @MainActor private func act(_ id: Int, _ status: String) async {
-        _ = try? await RewispAPI.post("promise/status", body: ["id": id, "status": status])
+        _ = try? await screenAIAPI.post("promise/status", body: ["id": id, "status": status])
         await reload()
     }
 
@@ -69,12 +69,12 @@ struct PromisesCard: View {
     // won't reappear, then persist.
     @MainActor private func remove(_ id: Int, _ status: String) async {
         gone.insert(id)
-        _ = try? await RewispAPI.post("promise/status", body: ["id": id, "status": status])
+        _ = try? await screenAIAPI.post("promise/status", body: ["id": id, "status": status])
     }
 }
 
 private struct PaperSlip: View {
-    let promise: RewispAPI.Promise
+    let promise: screenAIAPI.Promise
     let onConfirm: () async -> Void
     let onDone: () async -> Void
     let onDismiss: () async -> Void

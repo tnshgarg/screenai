@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 
 HOME = Path.home()
-DATA_DIR = HOME / "Rewisp"
-DB_PATH = DATA_DIR / "rewisp.db"
+DATA_DIR = HOME / "screenAI"
+DB_PATH = DATA_DIR / "screenai.db"
 VAULT_DIR = DATA_DIR / "vault"
 MEMORY_PATH = DATA_DIR / "memory.md"
 PAUSE_FLAG = DATA_DIR / "paused"

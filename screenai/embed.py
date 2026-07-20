@@ -16,7 +16,7 @@ import numpy as np
 
 from . import config
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 DIM = 512  # potion-retrieval-32M output dimension
 

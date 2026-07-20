@@ -1,4 +1,4 @@
-"""CLI: python3 -m rewisp [daemon|once|pause|resume|status|search <q>|ask <q>|bench [q...]|digest [--force]|vault|memory|export|report|embed-backfill|dream]"""
+"""CLI: python3 -m screenai [daemon|once|pause|resume|status|search <q>|ask <q>|bench [q...]|digest [--force]|vault|memory|export|report|embed-backfill|dream]"""
 
 import sys
 
@@ -166,7 +166,7 @@ def main():
         print(f"Confirmed ({len(confirmed)}):")
         for c in confirmed:
             print(f"  - {c}")
-        print(f"Pending ({len(pending)}) — edit ~/Rewisp/memory.md to approve/delete:")
+        print(f"Pending ({len(pending)}) — edit ~/screenAI/memory.md to approve/delete:")
         for p in pending:
             print(f"  - {p}")
     else:

@@ -1,4 +1,4 @@
-/* Rewisp landing — scroll reveal + the animated demos.
+/* screenAI landing — scroll reveal + the animated demos.
    Every demo is a small state machine that plays when it scrolls into view
    (via IntersectionObserver) and, for the looping ones, keeps cycling. */
 
@@ -34,7 +34,7 @@ function whenVisible(el, fn, { once = false } = {}) {
       d: "Watched on YouTube around 1 AM.", s: "YouTube · Yesterday 1:02 AM", e: "Gemini" },
     { q: "what's my student ID?", a: "A18…4291",
       d: "Pulled straight from your Vault — no model involved.", s: "Vault · trusted", e: "Vault" },
-    { q: "summarize what I did this morning", a: "Mostly Rewisp — tuning the on-device prompt in ask.py, plus a Calc III quiz on Canvas.",
+    { q: "summarize what I did this morning", a: "Mostly screenAI — tuning the on-device prompt in ask.py, plus a Calc III quiz on Canvas.",
       d: "Three apps, 2 hours, stitched from 14 wisps.", s: "4 sources · Today", e: "Claude" },
   ];
   const qEl = $("#q"), ans = $("#answer");

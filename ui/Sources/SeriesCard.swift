@@ -1,13 +1,13 @@
 import SwiftUI
 
-// Numbers Over Time — any label+number Rewisp sees repeatedly (weight, grade,
+// Numbers Over Time — any label+number screenAI sees repeatedly (weight, grade,
 // price, hours) becomes a tracked series with a sparkline. No integrations; the
 // screen is the API. Shown on Today when at least one series has been promoted.
 // Sparkline is a hand-drawn Path (no Charts dependency) so it can draw itself
 // left→right via .trim.
 
 struct SeriesCard: View {
-    @State private var series: [RewispAPI.SeriesItem] = []
+    @State private var series: [screenAIAPI.SeriesItem] = []
 
     var body: some View {
         // .task on an always-present VStack (see PromisesCard note) — a
@@ -19,14 +19,14 @@ struct SeriesCard: View {
                     ForEach(series) { s in
                         SeriesRow(item: s)
                     }
-                    Text("Numbers Rewisp saw more than once, charted from your own screen — nothing typed, nothing synced.")
+                    Text("Numbers screenAI saw more than once, charted from your own screen — nothing typed, nothing synced.")
                         .font(.caption2).foregroundStyle(.tertiary)
                 }
             }
         }
         .task {
             while !Task.isCancelled {
-                if let r = try? await RewispAPI.get("series", as: RewispAPI.SeriesList.self) {
+                if let r = try? await screenAIAPI.get("series", as: screenAIAPI.SeriesList.self) {
                     series = r.series
                 }
                 try? await Task.sleep(for: .seconds(8))
@@ -36,7 +36,7 @@ struct SeriesCard: View {
 }
 
 private struct SeriesRow: View {
-    let item: RewispAPI.SeriesItem
+    let item: screenAIAPI.SeriesItem
     @State private var progress: CGFloat = 0
 
     private var delta: Double { item.current - item.first }

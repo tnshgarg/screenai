@@ -60,7 +60,7 @@ final class SearchPanelController: NSObject, NSWindowDelegate {
         }
         // Every summon starts a fresh session with a focused field —
         // onAppear only fires on the first show, so signal explicitly.
-        NotificationCenter.default.post(name: .rewispPanelShown, object: nil)
+        NotificationCenter.default.post(name: .screenaiPanelShown, object: nil)
     }
 
     func hide() {
@@ -170,11 +170,11 @@ final class KeyablePanel: NSPanel {
 }
 
 extension Notification.Name {
-    static let rewispPanelShown = Notification.Name("rewispPanelShown")
-    static let rewispMainShown = Notification.Name("rewispMainShown")
+    static let screenaiPanelShown = Notification.Name("screenaiPanelShown")
+    static let screenaiMainShown = Notification.Name("screenaiMainShown")
     // Local automation hook: synthetic keystrokes can't reach a nonactivating
     // panel, so tests drive the search flow through this instead.
-    static let rewispTestAsk = Notification.Name("rewispTestAsk")
+    static let screenaiTestAsk = Notification.Name("screenaiTestAsk")
 }
 
 // Shared flags/hooks between the AppKit panel and the SwiftUI view.
@@ -190,7 +190,7 @@ final class SearchPanelState {
 struct SearchPanelView: View {
     let dismiss: () -> Void
     @State private var query = ""
-    @State private var result: RewispAPI.AskResult?
+    @State private var result: screenAIAPI.AskResult?
     @State private var asking = false
     // Natural height of the answer content, measured INSIDE the ScrollView.
     // The hosting view proposes the (small) window height to SwiftUI, so a bare
@@ -202,13 +202,13 @@ struct SearchPanelView: View {
     // focus — if a text field is focused there, offer to look it up.
     @State private var fieldLabel: String?
     @State private var formFieldCount = 0        // whole-form detection
-    @State private var formFill: [RewispAPI.ResolvedField]?
+    @State private var formFill: [screenAIAPI.ResolvedField]?
     @State private var fillingForm = false
     @State private var writingForm = false
     @State private var writeResult: String?
     @ObservedObject private var pin = PanelPin.shared
     @State private var suggestions: [String] = []
-    @AppStorage("rewisp.formassist") private var formAssist = true
+    @AppStorage("screenai.formassist") private var formAssist = true
     @FocusState private var focused: Bool
     // Drives the entrance animation (scale + fade from the top). Set false the
     // instant we're summoned, then animated to true so every summon re-plays it.
@@ -258,7 +258,7 @@ struct SearchPanelView: View {
                 HStack(spacing: 8) {
                     ForEach(Array(suggestions.enumerated()), id: \.element) { idx, s in
                         Button {
-                            Task { try? await RewispAPI.post("precog/tapped", body: ["text": s]) }
+                            Task { try? await screenAIAPI.post("precog/tapped", body: ["text": s]) }
                             query = s
                             ask()
                         } label: {
@@ -376,14 +376,14 @@ struct SearchPanelView: View {
             SearchPanelState.shared.escape = { escapePressed() }
             loadSuggestions()
         }
-        .onReceive(NotificationCenter.default.publisher(for: .rewispPanelShown)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .screenaiPanelShown)) { _ in
             reset()
             playEntrance()
             DispatchQueue.main.async { focused = true }
             loadSuggestions()
             if formAssist { loadFormContext() }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .rewispTestAsk)) { note in
+        .onReceive(NotificationCenter.default.publisher(for: .screenaiTestAsk)) { note in
             if let q = note.object as? String {
                 query = q
                 ask()
@@ -392,7 +392,7 @@ struct SearchPanelView: View {
         .onExitCommand { escapePressed() }
     }
 
-    private func answerView(_ r: RewispAPI.AskResult) -> some View {
+    private func answerView(_ r: screenAIAPI.AskResult) -> some View {
         ScrollView {
             answerContent(r)
                 // Set immediately (no animation here) so the frame always matches the
@@ -410,7 +410,7 @@ struct SearchPanelView: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.85), value: answerHeight)
     }
 
-    private func answerContent(_ r: RewispAPI.AskResult) -> some View {
+    private func answerContent(_ r: screenAIAPI.AskResult) -> some View {
             VStack(alignment: .leading, spacing: 10) {
                 // Hierarchy: answer loudest, detail quieter, source small, time smallest.
                 // prominentLead: first sentence renders as the bold takeaway,
@@ -500,7 +500,7 @@ struct SearchPanelView: View {
         Task { @MainActor in
             var body: [String: Any] = [:]
             if let pid = SearchPanelState.shared.formPid { body["pid"] = pid }
-            let res = try? await RewispAPI.post("form-write", body: body)
+            let res = try? await screenAIAPI.post("form-write", body: body)
             var written = 0
             if let res, let obj = try? JSONSerialization.jsonObject(with: res) as? [String: Any] {
                 written = obj["written"] as? Int ?? 0
@@ -518,7 +518,7 @@ struct SearchPanelView: View {
     private func loadFormContext(attempt: Int = 0) {
         let pidQuery = SearchPanelState.shared.formPid.map { "?pid=\($0)" } ?? ""
         Task { @MainActor in
-            let ctx = try? await RewispAPI.get("form-context\(pidQuery)", as: RewispAPI.FormContext.self)
+            let ctx = try? await screenAIAPI.get("form-context\(pidQuery)", as: screenAIAPI.FormContext.self)
             let count = ctx?.form?.fields.count ?? 0
             withAnimation(spring) {
                 if let label = ctx?.field?.label, !label.isEmpty, label.count < 40 {
@@ -542,9 +542,9 @@ struct SearchPanelView: View {
         Task { @MainActor in
             var body: [String: Any] = [:]
             if let pid = SearchPanelState.shared.formPid { body["pid"] = pid }
-            let res = try? await RewispAPI.post("form-fill", body: body)
-            var parsed: RewispAPI.FormFill?
-            if let res { parsed = try? JSONDecoder().decode(RewispAPI.FormFill.self, from: res) }
+            let res = try? await screenAIAPI.post("form-fill", body: body)
+            var parsed: screenAIAPI.FormFill?
+            if let res { parsed = try? JSONDecoder().decode(screenAIAPI.FormFill.self, from: res) }
             withAnimation(spring) {
                 formFill = parsed?.fields
                 fillingForm = false
@@ -555,7 +555,7 @@ struct SearchPanelView: View {
     // The gathered form: each field with its Vault value (or "not saved").
     // Copy each field on its own row, or fill them all into the page.
     @ViewBuilder
-    private func formFillView(_ fields: [RewispAPI.ResolvedField]) -> some View {
+    private func formFillView(_ fields: [screenAIAPI.ResolvedField]) -> some View {
         let found = fields.filter { $0.found }
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -631,10 +631,10 @@ struct SearchPanelView: View {
                     picks.append(s)
                 }
             }
-            if let p = try? await RewispAPI.get("precog", as: RewispAPI.Precog.self) {
+            if let p = try? await screenAIAPI.get("precog", as: screenAIAPI.Precog.self) {
                 add(p.suggestions)
             }
-            if picks.count < 3, let chats = try? await RewispAPI.get("chats", as: RewispAPI.Chats.self) {
+            if picks.count < 3, let chats = try? await screenAIAPI.get("chats", as: screenAIAPI.Chats.self) {
                 add(chats.chats.filter { $0.role == "user" }.suffix(6).map(\.content).reversed())
             }
             add(starters)
@@ -648,10 +648,10 @@ struct SearchPanelView: View {
         SearchPanelState.shared.busy = true
         withAnimation(spring) { asking = true; result = nil }
         Task { @MainActor in
-            var r: RewispAPI.AskResult
+            var r: screenAIAPI.AskResult
             do { r = try await AskEngine.ask(q) }
             catch {
-                r = RewispAPI.AskResult(answer: "⚠︎ \(error.localizedDescription)")
+                r = screenAIAPI.AskResult(answer: "⚠︎ \(error.localizedDescription)")
             }
             withAnimation(spring) { result = r; asking = false }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

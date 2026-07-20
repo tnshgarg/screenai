@@ -1,6 +1,6 @@
 """Numbers Over Time — detection, promotion to a series, lookup, cascade."""
 
-from rewisp import db, numbers
+from screenai import db, numbers
 
 
 class TestDetect:
@@ -100,7 +100,7 @@ class TestPrecisionGate:
             assert numbers.detect(junk) == [], junk
 
     def test_noise_surfaces_store_nothing(self, conn):
-        from rewisp import db
+        from screenai import db
         rid = db.insert_capture(conn, "Dia", None, None, "x")
         # streaming / ad / AI page_keys are skipped wholesale
         assert numbers.scan_and_store(conn, rid, "https://streampk.org/soccer/x", "Weight 180 lbs") == 0
@@ -111,13 +111,13 @@ class TestPrecisionGate:
 
 class TestLabelNormalization:
     def test_phrasing_variants_merge_into_one_series(self):
-        from rewisp import numbers
+        from screenai import numbers
         a = numbers.detect("My weight today 182 lbs")[0]
         b = numbers.detect("Weight 182 lbs")[0]
         assert a["key_label"] == b["key_label"] == "weight"
 
     def test_lookup_phrasings(self, conn):
-        from rewisp import db, numbers
+        from screenai import db, numbers
         rid = db.insert_capture(conn, "Health", None, None, "x")
         for val, ago in [(182, "-6 days"), (180, "-4 days"), (179, "-2 days")]:
             numbers.scan_and_store(conn, rid, "health::w", f"Weight {val} lbs")
@@ -129,13 +129,13 @@ class TestLabelNormalization:
 
 class TestJunkSeries:
     def test_engagement_and_relative_time_labels_rejected(self):
-        from rewisp import numbers
+        from screenai import numbers
         for t in ["1.2K Views 47", "M Subscribers 4", "3 hours ago 10",
                   "Commented 11 hours", "Label 7"]:
             assert numbers.detect(t) == [], t
 
     def test_media_pages_never_scanned(self, conn):
-        from rewisp import db, numbers
+        from screenai import db, numbers
         rid = db.insert_capture(conn, "Dia", None, None, "x")
         n = numbers.scan_and_store(conn, rid, "https://www.youtube.com/watch",
                                    "Weight 182 lbs")

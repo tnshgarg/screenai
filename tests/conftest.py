@@ -7,14 +7,14 @@ import sqlite3
 import numpy as np
 import pytest
 
-from rewisp import db
+from screenai import db
 
 
 @pytest.fixture
 def conn():
     c = sqlite3.connect(":memory:")
     c.executescript(db.SCHEMA)
-    from rewisp import vault
+    from screenai import vault
     c.executescript(vault.VAULT_SCHEMA)
     db._migrate(c)
     yield c
@@ -34,5 +34,5 @@ def unit_vec():
 
 
 def db_dim() -> int:
-    from rewisp import embed
+    from screenai import embed
     return embed.DIM

@@ -3,7 +3,7 @@
 import io
 import json
 
-from rewisp import mcp
+from screenai import mcp
 
 
 def _drive(messages):
@@ -24,7 +24,7 @@ class TestProtocol:
     def test_initialize_handshake(self):
         r = _drive([{"jsonrpc": "2.0", "id": 1, "method": "initialize",
                      "params": {"protocolVersion": "2024-11-05"}}])
-        assert r[0]["result"]["serverInfo"]["name"] == "rewisp"
+        assert r[0]["result"]["serverInfo"]["name"] == "screenai"
         assert "tools" in r[0]["result"]["capabilities"]
 
     def test_tools_list(self):
@@ -68,7 +68,7 @@ class TestVaultPrivacy:
 
 class TestHandlers:
     def test_get_promises(self, conn, monkeypatch):
-        from rewisp import db
+        from screenai import db
         monkeypatch.setattr(mcp, "db", db)
         rid = db.insert_capture(conn, "Notes", None, None, "x")
         db.add_promise(conn, rid, "me", "send the deck", "2026-07-20", 0.9)
@@ -78,7 +78,7 @@ class TestHandlers:
         assert "send the deck" in out and "user owes" in out
 
     def test_get_page_changes_needs_two_versions(self, conn, monkeypatch):
-        from rewisp import db
+        from screenai import db
         monkeypatch.setattr(db, "connect", lambda: conn)
         conn.execute("INSERT INTO captures (ts, app, window_title, url, ocr_text, page_key) "
                      "VALUES (datetime('now'),'App','P',NULL,'only one', 'app::p')")

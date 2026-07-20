@@ -1,7 +1,7 @@
-# Rewisp — Build Progress
+# screenAI — Build Progress
 
 **Current status (v0.8.0, 2026-07-14):** Phases 0–5 shipped + the "intelligent memory" cycle. In daily use (~180+ wisps/day, 3800+ wisps, ~500 episodes). v0.8 adds seven reasoning features (semantic search, delta, promises, numbers, precognition, dream/reinforcement, proactive-recall nudges) plus the first pytest suite (79 tests) and a Safari autofill fix. 10 releases (v0.1.0 → v0.8.0).
-**Next up:** custom "Rewisp AI model" training (~week-long); MCP connector to expose Rewisp memory to external agents (both in `todo.md`, not started). Re-adding a bundled offline/unlimited local model is an open option.
+**Next up:** custom "screenAI AI model" training (~week-long); MCP connector to expose screenAI memory to external agents (both in `todo.md`, not started). Re-adding a bundled offline/unlimited local model is an open option.
 
 > The v1 build plan (Phases 0–5) is preserved below as the permanent timeline.
 > Everything shipped after v0.1.0 is logged in the "Post-v0.1 releases" section
@@ -46,7 +46,7 @@
 
 ## Phase 2 — Ask
 
-- [x] CLI `python3 -m rewisp ask "..."` (2026-07-08)
+- [x] CLI `python3 -m screenai ask "..."` (2026-07-08)
 - [x] Local time-phrase parsing (today/yesterday/weekdays/N days ago/dayparts/weeks) (2026-07-08)
 - [x] FTS search over captures + summaries (2026-07-08)
 - [x] Retrieval quality pass (2026-07-08):
@@ -64,7 +64,7 @@
 
 ## Phase 3 — Digest + Memory + Vault
 
-- [x] launchd job at 9 PM local — com.rewisp.digest loaded (2026-07-08)
+- [x] launchd job at 9 PM local — com.screenai.digest loaded (2026-07-08)
 - [x] Wake catch-up + once/day guard (2026-07-08)
 - [x] Local input compression (line dedupe, group by hour+app, 60k char cap) (2026-07-08)
 - [x] One Claude call → summary, threads, subtext, memory proposals — first live
@@ -82,7 +82,7 @@
 
 ## Phase 4 — UI (native SwiftUI, talks to daemon over localhost:43117)
 
-- [x] Localhost HTTP API — now token-gated (X-Rewisp-Token, ~/Rewisp/.api_token 0600) (2026-07-08)
+- [x] Localhost HTTP API — now token-gated (X-ScreenAI-Token, ~/screenAI/.api_token 0600) (2026-07-08)
 - [x] SwiftUI menu bar app, mini dashboard popover (2026-07-08)
 - [x] Menu bar icon state: filled=capturing, pause badge=paused, hand=kill-list, hollow=daemon down; polls /status every 5s (2026-07-08)
 - [x] Esc closes the popover; Esc in search panel clears-then-closes (2026-07-08)
@@ -91,7 +91,7 @@
       so a flexible ScrollView collapsed to ~0 and the window never grew (chicken-egg).
       Answer content is now measured INSIDE the ScrollView and the ScrollView gets an
       explicit height. AUTO-VERIFIED: 56 → 97 (searching) → 185px (answer) via test hook.
-- [x] Test hook: distributed notification "com.rewisp.test.ask" drives the panel
+- [x] Test hook: distributed notification "com.screenai.test.ask" drives the panel
       (synthetic keystrokes can't reach a nonactivating panel) (2026-07-08)
 - [x] Main window: Chat (history + input), Vault (drag-drop/delete/note), Memory
       (approve/delete), Settings (kill list editor, engine info, data, shortcuts) (2026-07-08)
@@ -104,18 +104,18 @@
 
 - [x] Onboarding flow (first launch): welcome → privacy → permissions with live
       status checks + Open Settings buttons → tutorial. Screenshot-verified. (2026-07-08)
-- [x] GitHub repo: public https://github.com/yashmitb/Rewisp, sole collaborator
-      yashmitb, README written (2026-07-08)
+- [x] GitHub repo: public https://github.com/chinmaysoni/screenAI, sole collaborator
+      chinmaysoni, README written (2026-07-08)
 - [x] Auto-update: app checks GitHub Releases daily, "Get update" banner in the
       popover downloads the new DMG. v0.1.0 released with DMG asset. (2026-07-08)
 - [x] DMG packaging: scripts/make_dmg.sh bundles the daemon inside the app +
-      "Install Rewisp.command" (launchd setup, pyobjc check). dist/Rewisp-0.1.0.dmg built. (2026-07-08)
-- [x] Landing page live at https://yashmitb.github.io/Rewisp/ (site/, GitHub
+      "Install screenAI.command" (launchd setup, pyobjc check). dist/screenAI-0.1.0.dmg built. (2026-07-08)
+- [x] Landing page live at https://chinmaysoni.github.io/screenAI/ (site/, GitHub
       Pages via Actions, typed-demo hero, privacy + how-it-works sections) (2026-07-08)
-- [x] Export everything: `rewisp export` / Settings button → ~/Rewisp/export/
+- [x] Export everything: `screenai export` / Settings button → ~/screenAI/export/
       (summaries.md, chats.md, captures.csv, memory.md). Verified: 577 captures,
       62 chat lines exported human-readable. (2026-07-09)
-- [x] Weekly time report: /report endpoint + `rewisp report` CLI + "This week"
+- [x] Weekly time report: /report endpoint + `screenai report` CLI + "This week"
       card in the Today tab (stored digests + live compute) (2026-07-09)
 - [x] Daily local backup of summaries + memory (daemon daily tick, keeps 14) (2026-07-09)
 - [x] Notification setting: Silent / digest-ready ping (Settings → Notifications) (2026-07-09)
@@ -142,7 +142,7 @@
 - [x] Form detector (2026-07-09): daemon /form-context reads the focused text
       field over AX (panel is non-activating, so the field keeps focus);
       panel shows "You were in a '<label>' field — Find mine" which asks the
-      Vault and offers Copy. Copy-assist only; Rewisp never fills or submits.
+      Vault and offers Copy. Copy-assist only; screenAI never fills or submits.
 - [x] Performance: tick's two window-list queries merged into one
       (frontmost_info) (2026-07-09)
 - [ ] SUCCESS TESTS (definition of done): <5% CPU, <300 MB RAM all day; kill list zero rows; memory learned 1 fact; export human-readable ✓; $0 beyond Pro
@@ -164,15 +164,15 @@ Dia (Chromium-based) fully supports Chrome-style AppleScript (`URL of active tab
 5. **Synthetic keystrokes (CGEventPostToPid) don't reach a nonactivating NSPanel** — UI tests drive a distributed-notification hook instead.
 6. **Apple on-device model rambles** past its first answer (invents follow-up Q&As) — parser stops at the first repeated field; temperature 0.1, 250-token cap.
 7. **launchd daemon permission identity** is "Python" (Python.app inside the framework), not Terminal/VS Code.
-8. **Accessibility calls segfault Chromium** even on the main thread — form detection must run in a crash-isolated `rewisp axhelper` subprocess; the daemon talks to it over stdin/stdout and never touches AX itself. Chromium only exposes its web-AX tree while the enabling client stays alive, so the long-lived daemon holds it open.
-9. **Non-activating panel + `NSApp.activate`** = the click-twice bug. Activating the app stole app-level focus, so dismissing the panel left Rewisp active and the next click just re-activated the app behind it. A `.nonactivatingPanel` takes key focus for typing without activating — don't call `NSApp.activate`.
+8. **Accessibility calls segfault Chromium** even on the main thread — form detection must run in a crash-isolated `screenai axhelper` subprocess; the daemon talks to it over stdin/stdout and never touches AX itself. Chromium only exposes its web-AX tree while the enabling client stays alive, so the long-lived daemon holds it open.
+9. **Non-activating panel + `NSApp.activate`** = the click-twice bug. Activating the app stole app-level focus, so dismissing the panel left screenAI active and the next click just re-activated the app behind it. A `.nonactivatingPanel` takes key focus for typing without activating — don't call `NSApp.activate`.
 10. **GitHub Pages CDN caches assets ~10 min** — a browser cache-reset refetches from the edge, not origin, so a fixed CSS/JS still looked broken. Version the asset URLs (`styles.css?v=…`) to force a fresh fetch.
 
 ---
 
 ## v0.11.0 — connect your agents (2026-07-19)
 
-- **MCP connector** — `python3 -m rewisp mcp` speaks the Model Context Protocol over stdio, so Claude Desktop / Claude Code / Cursor / VS Code / Windsurf / Gemini CLI can query your screen memory as five read-only tools (search_memory, get_context, get_day_summary, get_promises, get_page_changes). Read-only, fully local (no network listener), never spends your subscriptions, Vault excluded by default.
+- **MCP connector** — `python3 -m screenai mcp` speaks the Model Context Protocol over stdio, so Claude Desktop / Claude Code / Cursor / VS Code / Windsurf / Gemini CLI can query your screen memory as five read-only tools (search_memory, get_context, get_day_summary, get_promises, get_page_changes). Read-only, fully local (no network listener), never spends your subscriptions, Vault excluded by default.
 - **Connect agents** is a top-level sidebar page: a live "Connected" banner (heartbeat when an agent queries), an animated demo, and per-client setup — one-click "Add to Claude Desktop" (writes the config), plus copy/download for every other client. Honest note that ChatGPT connectors are remote-only.
 - **Numbers precision fix** — the "Tracked" card was charting garbage (ad prices, file sizes, progress bars). Now the label must BE a personal metric (weight, grade, steps, heart rate…); money/counts and noise surfaces (streaming/search/AI/Finder) are excluded. Purged 291 junk rows. 143 tests.
 
@@ -212,7 +212,7 @@ still holds.
 
 ## v0.8 — intelligent memory (2026-07-14)
 
-The cycle that made Rewisp reason over its own memory, not just store it. All
+The cycle that made screenAI reason over its own memory, not just store it. All
 local, all free. First automated test suite landed here too (79 pytest).
 
 - **Semantic Memory (#0)** — local static embeddings (model2vec potion-retrieval-32M, 512-dim, pure numpy) on every wisp; retrieval fuses FTS + vector rank via RRF. Brute-force cosine (no vector-index extension at this scale). Fail-safe: offline → FTS only. `delete_captures` is the single cascade choke point for forget/kill/retention.
@@ -249,4 +249,4 @@ this is the running release log.
 - **Local model support** — hardware auto-detect + best-fit model download (MLX), later removed; Ollama remains as the local engine. Offline/unlimited path still open.
 - **Benchmark harness** — LLM-as-judge, Apple vs Claude across 15+ questions, gold-answer caching.
 - **Landing page rework** — split into html/css/js, live in-browser feature demos (autofill, engine chain, digest, time), fresh screenshots, CDN cache-busting (gotcha #10).
-- **Self-capture exclusion** — daemon no longer indexes Rewisp's own UI (was polluting retrieval with your own questions).
+- **Self-capture exclusion** — daemon no longer indexes screenAI's own UI (was polluting retrieval with your own questions).

@@ -1,13 +1,13 @@
 import Foundation
 
-// Client for the local Rewisp daemon (127.0.0.1 only).
-// Every request carries the shared secret from ~/Rewisp/.api_token.
-struct RewispAPI {
+// Client for the local screenAI daemon (127.0.0.1 only).
+// Every request carries the shared secret from ~/screenAI/.api_token.
+struct screenAIAPI {
     static let base = URL(string: "http://127.0.0.1:43117")!
 
     static var token: String = {
         let path = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Rewisp/.api_token")
+            .appendingPathComponent("screenAI/.api_token")
         return (try? String(contentsOf: path, encoding: .utf8))?
             .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
     }()
@@ -314,7 +314,7 @@ struct RewispAPI {
             if let u = comps.url { url = u }
         }
         var req = URLRequest(url: url)
-        req.setValue(token, forHTTPHeaderField: "X-Rewisp-Token")
+        req.setValue(token, forHTTPHeaderField: "X-ScreenAI-Token")
         return req
     }
 
@@ -339,7 +339,7 @@ struct RewispAPI {
     static func ask(_ question: String) async throws -> AskResult {
         let data = try await post("ask", body: ["question": question])
         let resp = try JSONDecoder().decode(AskResult.self, from: data)
-        if let err = resp.error { throw NSError(domain: "rewisp", code: 1,
+        if let err = resp.error { throw NSError(domain: "screenai", code: 1,
             userInfo: [NSLocalizedDescriptionKey: err]) }
         return resp
     }

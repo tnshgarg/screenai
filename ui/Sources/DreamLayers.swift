@@ -5,7 +5,7 @@ import SwiftUI
 // Settings → Your data.
 
 struct MemoryLayersCard: View {
-    @State private var layers: RewispAPI.MemoryLayers?
+    @State private var layers: screenAIAPI.MemoryLayers?
     @State private var consolidating = false
     @State private var settle = false
 
@@ -25,7 +25,7 @@ struct MemoryLayersCard: View {
                 Button {
                     Task {
                         consolidating = true
-                        _ = try? await RewispAPI.post("dream/run", body: ["include_recent": true])
+                        _ = try? await screenAIAPI.post("dream/run", body: ["include_recent": true])
                         await load(animated: true)
                         consolidating = false
                     }
@@ -47,7 +47,7 @@ struct MemoryLayersCard: View {
     }
 
     // Two settling bands: raw on top, episodes (denser) below. Widths animate in.
-    private func sediment(_ l: RewispAPI.MemoryLayers) -> some View {
+    private func sediment(_ l: screenAIAPI.MemoryLayers) -> some View {
         let total = max(l.raw_wisps + l.episodes * 20, 1)
         let rawFrac = Double(l.raw_wisps) / Double(total)
         let epFrac = Double(l.episodes * 20) / Double(total)
@@ -91,7 +91,7 @@ struct MemoryLayersCard: View {
 
     @MainActor private func load(animated: Bool) async {
         if animated { settle = false }
-        layers = try? await RewispAPI.get("memory-layers", as: RewispAPI.MemoryLayers.self)
+        layers = try? await screenAIAPI.get("memory-layers", as: screenAIAPI.MemoryLayers.self)
         if animated {
             try? await Task.sleep(for: .milliseconds(120))
             settle = true

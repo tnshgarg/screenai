@@ -1,6 +1,6 @@
 """Delta Memory: page_key identity + the fuzzy line diff."""
 
-from rewisp import delta
+from screenai import delta
 
 
 class TestPageKey:

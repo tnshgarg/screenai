@@ -78,7 +78,7 @@ struct LaunchReveal<Content: View>: View {
             }
         }
         .task { await play() }
-        .onReceive(NotificationCenter.default.publisher(for: .rewispMainShown)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .screenaiMainShown)) { _ in
             // Window is reused across opens; replay the splash each time.
             draw = 0; glow = 0; lift = false; contentIn = false
             Task { await play() }

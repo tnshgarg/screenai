@@ -1,9 +1,9 @@
 #!/bin/zsh
-# Build Rewisp.app from the SwiftUI sources — no Xcode project needed.
+# Build screenAI.app from the SwiftUI sources — no Xcode project needed.
 set -e
 cd "$(dirname "$0")"
 
-APP=Rewisp.app
+APP=screenAI.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
@@ -14,12 +14,12 @@ swiftc -O -parse-as-library \
     Sources/*.swift \
     -framework SwiftUI -framework AppKit -framework Carbon -framework LocalAuthentication \
     -Xlinker -weak_framework -Xlinker FoundationModels \
-    -o "$APP/Contents/MacOS/Rewisp"
+    -o "$APP/Contents/MacOS/screenAI"
 
-if [[ ! -f Rewisp.icns ]]; then
+if [[ ! -f screenAI.icns ]]; then
     python3 icon/make_icon.py
 fi
-cp Rewisp.icns "$APP/Contents/Resources/"
+cp screenAI.icns "$APP/Contents/Resources/"
 cp ../docs/MANUAL.md "$APP/Contents/Resources/MANUAL.md"
 
 cat > "$APP/Contents/Info.plist" <<'PLIST'
@@ -27,10 +27,10 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleName</key><string>Rewisp</string>
-    <key>CFBundleIconFile</key><string>Rewisp</string>
-    <key>CFBundleIdentifier</key><string>com.yashmit.rewisp</string>
-    <key>CFBundleExecutable</key><string>Rewisp</string>
+    <key>CFBundleName</key><string>screenAI</string>
+    <key>CFBundleIconFile</key><string>screenAI</string>
+    <key>CFBundleIdentifier</key><string>com.chinmaysoni.screenai</string>
+    <key>CFBundleExecutable</key><string>screenAI</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>0.11.0</string>
     <key>LSMinimumSystemVersion</key><string>15.0</string>
@@ -44,10 +44,10 @@ codesign --force --sign - "$APP"
 echo "built $APP"
 
 # Install to /Applications so Spotlight can launch it and the login item stays valid.
-if [[ "$1" == "--install" || -d /Applications/Rewisp.app ]]; then
-    pkill -x Rewisp 2>/dev/null || true
-    rm -rf /Applications/Rewisp.app
+if [[ "$1" == "--install" || -d /Applications/screenAI.app ]]; then
+    pkill -x screenAI 2>/dev/null || true
+    rm -rf /Applications/screenAI.app
     cp -R "$APP" /Applications/
-    open /Applications/Rewisp.app
-    echo "installed + relaunched /Applications/Rewisp.app"
+    open /Applications/screenAI.app
+    echo "installed + relaunched /Applications/screenAI.app"
 fi

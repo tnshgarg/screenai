@@ -1,6 +1,6 @@
 """Localhost HTTP API for the native UI. Binds 127.0.0.1 only — nothing leaves the machine.
 
-Every request must carry the shared secret in X-Rewisp-Token (file ~/Rewisp/.api_token,
+Every request must carry the shared secret in X-ScreenAI-Token (file ~/screenAI/.api_token,
 mode 0600). Without it, any local process could read the whole screen history.
 
 GET  /status          -> daemon state, today's counts, digest info
@@ -32,7 +32,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from . import config, db, digest, memory
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 PORT = 43117
 
@@ -62,7 +62,7 @@ def _engine_availability() -> dict:
 
 def _form_pid(body: dict) -> int | None:
     """The target app for form ops: the panel's captured pid, else the daemon's
-    cached frontmost (must be recent and not Rewisp itself)."""
+    cached frontmost (must be recent and not screenAI itself)."""
     import time as _time
     from . import daemon
     if body.get("pid"):
@@ -71,7 +71,7 @@ def _form_pid(body: dict) -> int | None:
         except (TypeError, ValueError):
             pass
     fm = daemon.STATE.get("frontmost")
-    if fm and _time.time() - fm.get("ts", 0) < 30 and fm.get("app") != "Rewisp":
+    if fm and _time.time() - fm.get("ts", 0) < 30 and fm.get("app") != "screenAI":
         return fm.get("pid")
     return None
 
@@ -106,7 +106,7 @@ class Handler(BaseHTTPRequestHandler):
             return {}
 
     def _authorized(self) -> bool:
-        sent = self.headers.get("X-Rewisp-Token", "")
+        sent = self.headers.get("X-ScreenAI-Token", "")
         return bool(sent) and hmac.compare_digest(sent, config.api_token())
 
     # -- GET -------------------------------------------------------------
@@ -192,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
                 pid = int(q["pid"][0]) if q.get("pid") else None
                 if pid is None:
                     fm = daemon.STATE.get("frontmost")
-                    if fm and _time.time() - fm.get("ts", 0) < 10 and fm.get("app") != "Rewisp":
+                    if fm and _time.time() - fm.get("ts", 0) < 10 and fm.get("app") != "screenAI":
                         pid = fm.get("pid")
                 _n = 0
                 if pid:
@@ -240,7 +240,7 @@ class Handler(BaseHTTPRequestHandler):
                     "client": act.get("client"),
                     "expose_vault": config.load_settings().get("mcp_expose_vault", False),
                     "cli_command": _mcp.cli_command(),
-                    "json_block": _json_mod.dumps({"mcpServers": {"rewisp": _mcp.server_entry()}}, indent=2),
+                    "json_block": _json_mod.dumps({"mcpServers": {"screenai": _mcp.server_entry()}}, indent=2),
                     "desktop_installed": _mcp.desktop_installed(),
                     "clients": _mcp.client_setups(),
                 })
@@ -453,7 +453,7 @@ class Handler(BaseHTTPRequestHandler):
                     finally:
                         _digest["running"] = False
 
-                threading.Thread(target=_work, name="rewisp-digest", daemon=True).start()
+                threading.Thread(target=_work, name="screenai-digest", daemon=True).start()
                 self._json({"started": True})
             elif self.path == "/local/download":
                 from . import localmodel
@@ -504,7 +504,7 @@ class Handler(BaseHTTPRequestHandler):
                     # credential detection refused the note — delete and report
                     path.unlink(missing_ok=True)
                     return self._json({"error": f"refused: looks like it contains a "
-                                                f"{refused[path.name]} — Rewisp never "
+                                                f"{refused[path.name]} — screenAI never "
                                                 f"stores credentials"}, 400)
                 self._json({"created": path.name})
             elif self.path == "/browser-consent":
@@ -535,7 +535,7 @@ class Handler(BaseHTTPRequestHandler):
         pending.remove(line)
         if approve:
             confirmed.append(line)
-        text = "# Rewisp memory\n\n## Confirmed\n"
+        text = "# screenAI memory\n\n## Confirmed\n"
         text += "".join(f"- {c}\n" for c in confirmed)
         text += "\n## Pending (approve or delete)\n"
         text += "".join(f"- {p}\n" for p in pending)
@@ -546,6 +546,6 @@ class Handler(BaseHTTPRequestHandler):
 def start() -> ThreadingHTTPServer:
     config.api_token()  # ensure the token file exists before the UI reads it
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    threading.Thread(target=server.serve_forever, name="rewisp-http", daemon=True).start()
+    threading.Thread(target=server.serve_forever, name="screenai-http", daemon=True).start()
     log.info("http api on 127.0.0.1:%d", PORT)
     return server

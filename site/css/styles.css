@@ -1,4 +1,4 @@
-/* Rewisp landing — design tokens + layout + demo animations.
+/* screenAI landing — design tokens + layout + demo animations.
    Dark, calm, one accent (wisp blue). No framework. */
 
 :root {
@@ -218,7 +218,7 @@ h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -.02em
 @keyframes strike { from { opacity: 1; } to { opacity: .5; } }
 @keyframes flash { 0% { background: rgba(142,162,255,.18); } 100% { background: rgba(255,255,255,.03); } }
 
-/* connect demo — agent asks, rewisp answers (staggered reveal) */
+/* connect demo — agent asks, screenai answers (staggered reveal) */
 .conv { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; min-height: 150px; }
 .c-q { align-self: flex-end; max-width: 80%; background: var(--accent); color: #0b0d16; font-size: 13.5px; font-weight: 500; padding: 9px 14px; border-radius: 14px; opacity: 0; transform: translateY(6px); }
 .c-tool { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--text); opacity: 0; }

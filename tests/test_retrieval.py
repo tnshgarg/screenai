@@ -3,7 +3,7 @@ lookups for delta. Uses the in-memory `conn` fixture."""
 
 import numpy as np
 
-from rewisp import db, embed
+from screenai import db, embed
 
 
 def _add(conn, app, title, url, text, emb=None):

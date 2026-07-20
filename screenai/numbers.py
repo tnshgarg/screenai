@@ -1,6 +1,6 @@
 """Numbers Over Time — passively track any number you see repeatedly.
 
-A weight in an app, a grade on Canvas, a price, tracked hours. Rewisp sees the
+A weight in an app, a grade on Canvas, a price, tracked hours. screenAI sees the
 same `label + number` on the same page over and over; store the series and chart
 it. "How has my weight moved?" -> a sparkline from your own screen history. No
 integrations — the screen is the API.
@@ -16,7 +16,7 @@ import re
 
 from . import db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 # label (letters/spaces) then optional colon, optional currency, the number,
 # optional unit. Tuned for "Weight 154.2 lbs", "Balance: $1,240.50", "Grade 92%".

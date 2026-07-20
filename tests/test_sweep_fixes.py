@@ -3,7 +3,7 @@ precog fuzzy de-duplication."""
 
 from difflib import SequenceMatcher
 
-from rewisp import dejavu
+from screenai import dejavu
 
 
 class TestCleanSnippet:

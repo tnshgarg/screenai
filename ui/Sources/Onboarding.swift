@@ -1,12 +1,12 @@
 import SwiftUI
 import AppKit
 
-// First-launch onboarding: what Rewisp is, the permissions it needs (with live
+// First-launch onboarding: what screenAI is, the permissions it needs (with live
 // status), and a 30-second tutorial. Shown until completed once.
 final class OnboardingController {
     static let shared = OnboardingController()
     private var window: NSWindow?
-    static let doneKey = "rewisp.onboarded"
+    static let doneKey = "screenai.onboarded"
 
     var needed: Bool {
         !UserDefaults.standard.bool(forKey: Self.doneKey)
@@ -37,7 +37,7 @@ struct OnboardingView: View {
     let finish: () -> Void
     @State private var page = 0
     @State private var consented: Set<String> = []
-    @AppStorage("rewisp.browser") private var preferredBrowser = ""
+    @AppStorage("screenai.browser") private var preferredBrowser = ""
     @ObservedObject var status = StatusModel.shared
 
     // Vault setup inputs
@@ -91,7 +91,7 @@ struct OnboardingView: View {
                     Button("Back") { withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { page -= 1 } }
                         .buttonStyle(.plain).foregroundStyle(.secondary)
                 }
-                Button(page == pages - 1 ? "Start using Rewisp" : "Continue") {
+                Button(page == pages - 1 ? "Start using screenAI" : "Continue") {
                     if page == pages - 1 { finish() }
                     else { withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { page += 1 } }
                 }
@@ -122,9 +122,9 @@ struct OnboardingView: View {
             .onAppear {
                 withAnimation(.easeInOut(duration: 2.6).repeatForever(autoreverses: true)) { iconGlow = true }
             }
-            Text("Welcome to Rewisp")
+            Text("Welcome to screenAI")
                 .font(.largeTitle.weight(.semibold))
-            Text("An ambient memory for your Mac.\nEvery glimpse of your screen becomes a wisp — text only, kept on this Mac.\nAsk anything later and Rewisp revisits them for you.")
+            Text("An ambient memory for your Mac.\nEvery glimpse of your screen becomes a wisp — text only, kept on this Mac.\nAsk anything later and screenAI revisits them for you.")
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -153,7 +153,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Which browser do you live in?")
                 .font(.title.weight(.semibold))
-            Text("Rewisp reads the active tab's address to know *where* you saw things — and to fully pause capture on banking sites and private windows. Pick yours and macOS will ask for one-time permission now instead of surprising you later.")
+            Text("screenAI reads the active tab's address to know *where* you saw things — and to fully pause capture on banking sites and private windows. Pick yours and macOS will ask for one-time permission now instead of surprising you later.")
                 .font(.callout).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -162,7 +162,7 @@ struct OnboardingView: View {
                     Button {
                         preferredBrowser = b.name
                         Task { @MainActor in
-                            _ = try? await RewispAPI.post("browser-consent", body: ["app": b.name])
+                            _ = try? await screenAIAPI.post("browser-consent", body: ["app": b.name])
                             consented.insert(b.name)
                         }
                     } label: {
@@ -185,7 +185,7 @@ struct OnboardingView: View {
             }
 
             if preferredBrowser == "Firefox" {
-                Label("Firefox can't share page URLs — Rewisp still captures what you read, but the banking-site kill list can't see addresses there.",
+                Label("Firefox can't share page URLs — screenAI still captures what you read, but the banking-site kill list can't see addresses there.",
                       systemImage: "exclamationmark.triangle")
                     .font(.caption).foregroundStyle(.orange)
             } else {
@@ -207,7 +207,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Pick your brain")
                 .font(.title.weight(.semibold))
-            Text("Rewisp answers with an AI. You choose which — and you can change it anytime in Settings. Nothing is locked in.")
+            Text("screenAI answers with an AI. You choose which — and you can change it anytime in Settings. Nothing is locked in.")
                 .font(.callout).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -222,7 +222,7 @@ struct OnboardingView: View {
 
             LocalModelSetup(compact: true)
 
-            Text("Prefer to skip? Leave it — Rewisp uses the built-in Apple model. You can download a local model or add a cloud key later in Settings. No rush.")
+            Text("Prefer to skip? Leave it — screenAI uses the built-in Apple model. You can download a local model or add a cloud key later in Settings. No rush.")
                 .font(.caption).foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -243,9 +243,9 @@ struct OnboardingView: View {
     private var vaultPage: some View {
       ScrollView {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Teach Rewisp about you")
+            Text("Teach screenAI about you")
                 .font(.title.weight(.semibold))
-            Text("Add a few facts and Rewisp fills forms for you — hit ⌘⇧Space on any signup page and it writes your name, email, address, and more. Stored only in your private Vault on this Mac. Passwords and card numbers are never filled.")
+            Text("Add a few facts and screenAI fills forms for you — hit ⌘⇧Space on any signup page and it writes your name, email, address, and more. Stored only in your private Vault on this Mac. Passwords and card numbers are never filled.")
                 .font(.callout).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -297,7 +297,7 @@ struct OnboardingView: View {
         guard !lines.isEmpty else { return }
         let text = lines.joined(separator: "\n")
         Task { @MainActor in
-            _ = try? await RewispAPI.post("vault/note", body: ["title": "My info", "text": text])
+            _ = try? await screenAIAPI.post("vault/note", body: ["title": "My info", "text": text])
             withAnimation(.spring) { vaultSaved = true }
         }
     }
@@ -306,20 +306,20 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Two permissions")
                 .font(.title.weight(.semibold))
-            Text("Rewisp's background helper (it shows up as “Python”) reads the screen and listens for the pause hotkey.")
+            Text("screenAI's background helper (it shows up as “Python”) reads the screen and listens for the pause hotkey.")
                 .font(.callout).foregroundStyle(.secondary)
 
             permissionRow(
                 ok: status.status?.screen_permission == true,
                 title: "Screen & System Audio Recording",
-                detail: "Lets Rewisp see the screen to remember it.",
+                detail: "Lets screenAI see the screen to remember it.",
                 anchor: "Privacy_ScreenCapture")
 
             permissionRow(
                 ok: status.daemonUp,
                 title: "Background service running",
-                detail: status.daemonUp ? "The Rewisp daemon is up."
-                                        : "Run scripts/install.sh (or `python3 -m rewisp daemon`) to start it.",
+                detail: status.daemonUp ? "The screenAI daemon is up."
+                                        : "Run scripts/install.sh (or `python3 -m screenai daemon`) to start it.",
                 anchor: nil)
 
             permissionRow(
@@ -346,9 +346,9 @@ struct OnboardingView: View {
             bullet("menubar.rectangle", "Menu bar — today at a glance",
                    "Time per app, loose threads, pause, and Forget 10 min. The icon shows capture state.")
             bullet("lock.rectangle.stack", "Vault — facts about you",
-                   "Drop in your resume or addresses; Rewisp treats them as trusted truth. Credentials are refused.")
+                   "Drop in your resume or addresses; screenAI treats them as trusted truth. Credentials are refused.")
             bullet("moon.stars", "9 PM Digest",
-                   "One nightly summary: what happened, what's unfinished, what Rewisp learned (you approve every fact).")
+                   "One nightly summary: what happened, what's unfinished, what screenAI learned (you approve every fact).")
             bullet("cpu", "Free by default",
                    "Quick answers run on Apple's built-in model. Claude Pro / ChatGPT Plus / local Ollama handle the rest — pick in Settings, never an API key.")
             Spacer()
@@ -409,7 +409,7 @@ struct AutofillDemo: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 WispMark().frame(width: 20, height: 20)
-                Text("Rewisp").font(.callout.weight(.semibold))
+                Text("screenAI").font(.callout.weight(.semibold))
                 Spacer()
                 if showPill {
                     Label("Fill this form", systemImage: "wand.and.stars")

@@ -1,4 +1,4 @@
-"""Vault: user-dropped files about himself (~/Rewisp/vault/). Text extracted on ingest,
+"""Vault: user-dropped files about himself (~/screenAI/vault/). Text extracted on ingest,
 indexed into its own FTS table. Vault is trusted truth — beats screen data on conflict.
 Refuses files that look like they contain credentials."""
 
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from . import config, db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 VAULT_SCHEMA = """
 CREATE TABLE IF NOT EXISTS vault_files (

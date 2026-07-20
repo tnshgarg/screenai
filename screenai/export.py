@@ -1,4 +1,4 @@
-"""Export everything human-readable to ~/Rewisp/export/: daily summaries,
+"""Export everything human-readable to ~/screenAI/export/: daily summaries,
 memory, chat history (markdown), captures (CSV). Local files only."""
 
 import csv
@@ -9,7 +9,7 @@ from datetime import datetime
 
 from . import config, db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 EXPORT_DIR = config.DATA_DIR / "export"
 
@@ -23,7 +23,7 @@ def run(conn=None) -> dict:
     rows = conn.execute(
         "SELECT date, summary_md, threads_md, time_report_json FROM summaries "
         "ORDER BY date DESC").fetchall()
-    parts = ["# Rewisp — daily summaries\n"]
+    parts = ["# screenAI — daily summaries\n"]
     for date, summary, threads, report_json in rows:
         parts.append(f"\n## {date}\n\n{summary or '(no summary)'}")
         if threads and threads.strip() not in ("", "None."):
@@ -39,9 +39,9 @@ def run(conn=None) -> dict:
 
     # chats.md
     rows = conn.execute("SELECT ts, role, content FROM chats ORDER BY id").fetchall()
-    parts = ["# Rewisp — ask history\n"]
+    parts = ["# screenAI — ask history\n"]
     for ts, role, content in rows:
-        prefix = "**You:**" if role == "user" else "**Rewisp:**"
+        prefix = "**You:**" if role == "user" else "**screenAI:**"
         parts.append(f"\n{prefix} {content}\n<sub>{ts} UTC</sub>")
     (EXPORT_DIR / "chats.md").write_text("\n".join(parts) + "\n")
     counts["chats"] = len(rows)

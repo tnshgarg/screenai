@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct RewispApp: App {
+struct ScreenAIApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -28,19 +28,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Single instance: Spotlight may launch a second copy (e.g. the build in
         // the repo) while one is already running. Don't just die silently — tell
         // the running instance to show the main window, then bow out. This makes
-        // "open Rewisp from Spotlight" always visibly do something.
+        // "open screenAI from Spotlight" always visibly do something.
         let others = NSRunningApplication.runningApplications(
-            withBundleIdentifier: Bundle.main.bundleIdentifier ?? "com.yashmit.rewisp")
+            withBundleIdentifier: Bundle.main.bundleIdentifier ?? "com.chinmaysoni.screenai")
             .filter { $0 != NSRunningApplication.current }
         if !others.isEmpty {
             DistributedNotificationCenter.default().postNotificationName(
-                Notification.Name("com.rewisp.open.main"), object: nil,
+                Notification.Name("com.screenai.open.main"), object: nil,
                 userInfo: nil, deliverImmediately: true)
             NSApp.terminate(nil)
             return
         }
         DistributedNotificationCenter.default().addObserver(
-            forName: Notification.Name("com.rewisp.open.main"), object: nil, queue: .main
+            forName: Notification.Name("com.screenai.open.main"), object: nil, queue: .main
         ) { _ in
             Task { @MainActor in MainWindowController.shared.show() }
         }
@@ -66,14 +66,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if OnboardingController.shared.needed {
             OnboardingController.shared.show()
         }
-        // Local-only automation hook (see .rewispTestAsk). Triggers UI, not data.
+        // Local-only automation hook (see .screenaiTestAsk). Triggers UI, not data.
         DistributedNotificationCenter.default().addObserver(
-            forName: Notification.Name("com.rewisp.test.ask"), object: nil, queue: .main
+            forName: Notification.Name("com.screenai.test.ask"), object: nil, queue: .main
         ) { note in
             Task { @MainActor in
                 SearchPanelController.shared.show()
                 try? await Task.sleep(for: .milliseconds(400))
-                NotificationCenter.default.post(name: .rewispTestAsk, object: note.object)
+                NotificationCenter.default.post(name: .screenaiTestAsk, object: note.object)
             }
         }
     }
@@ -93,7 +93,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.keyWindow?.close()  // close the popover first
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "Quit Rewisp?"
+        alert.messageText = "Quit screenAI?"
         alert.informativeText = "The menu bar app and hotkeys go away until you reopen it. Capture keeps running in the background."
         alert.addButton(withTitle: "Quit")
         alert.addButton(withTitle: "Cancel")

@@ -4,8 +4,8 @@ The LIVE_GARBAGE cases are real false positives captured in daily use (v0.8.1
 stored 19 promises; 18 were dismissed as junk). Every one must stay dead.
 """
 
-from rewisp import db, promises
-from rewisp.promises import detect, scan_and_store, source_class
+from screenai import db, promises
+from screenai.promises import detect, scan_and_store, source_class
 
 
 def hits(text, source="authored", bar=0.70):
@@ -17,7 +17,7 @@ def hits(text, source="authored", bar=0.70):
 class TestSourceGating:
     def test_ai_and_ide_surfaces_blocked(self):
         for app in ["Claude", "Gemini", "Antigravity IDE", "Terminal", "Cursor",
-                    "Visual Studio Code", "Dock", "Finder", "Rewisp"]:
+                    "Visual Studio Code", "Dock", "Finder", "screenAI"]:
             assert source_class(app, None) == "blocked", app
 
     def test_authored_surfaces(self):

@@ -2,7 +2,7 @@
 
 When the search panel is summoned it asks what field the user was typing in
 (the panel is non-activating, so the field keeps focus). The UI offers to look
-that field up in the Vault — copy-assist only: Rewisp never fills or submits
+that field up in the Vault — copy-assist only: screenAI never fills or submits
 forms on its own (brief rule: fill, never submit; we stay one step safer).
 
 Uses the same Accessibility permission the pause hotkey already needs.
@@ -18,7 +18,7 @@ from ApplicationServices import (
     AXUIElementSetAttributeValue,
 )
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 _FIELD_ROLES = {"AXTextField", "AXTextArea", "AXSearchField", "AXComboBox"}
 
@@ -33,7 +33,7 @@ def _locked(fn):
 # ---- crash isolation --------------------------------------------------------
 # Any AX call against a Chromium browser can segfault — the deep tree walk AND even
 # a single attribute set. So the daemon NEVER touches AX. Instead a persistent
-# helper subprocess (rewisp.axhelper) owns all Accessibility: it stays alive to hold
+# helper subprocess (screenai.axhelper) owns all Accessibility: it stays alive to hold
 # the browser's web-AX tree built (Chromium exposes it only while the enabling client
 # lives), and if it segfaults the daemon just respawns it and stays up itself.
 
@@ -53,7 +53,7 @@ class _Helper:
         env = dict(os.environ)
         env["PYTHONPATH"] = root + os.pathsep + env.get("PYTHONPATH", "")
         self.proc = subprocess.Popen(
-            [sys.executable, "-m", "rewisp", "axhelper"],
+            [sys.executable, "-m", "screenai", "axhelper"],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             text=True, bufsize=1, cwd=root, env=env)
         log.info("ax helper started (pid %s)", self.proc.pid)

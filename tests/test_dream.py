@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from rewisp import db, dream, embed
+from screenai import db, dream, embed
 
 
 # Anchor to a fixed midday so relative offsets never straddle UTC midnight

@@ -1,7 +1,7 @@
-# Rewisp — User Manual
+# screenAI — User Manual
 
 Your Mac remembers everything you see. Every glimpse of your screen becomes a
-**wisp** — text only, stored on this Mac. Ask anything later and Rewisp *revisits*
+**wisp** — text only, stored on this Mac. Ask anything later and screenAI *revisits*
 those wisps to answer. Quick answers run on Apple's on-device model ($0, nothing
 leaves the Mac); hard questions and the nightly digest use a stronger engine
 (Claude / ChatGPT / free Gemini / Ollama — whichever you've set up, $0 extra).
@@ -38,10 +38,10 @@ yesterday morning"*, *"what did I read 3 days ago"*.
 strong answers, no install, no paid API), then **free local Ollama** (install from
 ollama.com, `ollama pull llama3.1:8b`). Ollama is unlimited and never leaves your
 Mac but is weaker; Gemini sends your memory text to Google only when it answers.
-Subscriptions/free keys only — Rewisp refuses to run if ANTHROPIC_API_KEY or
+Subscriptions/free keys only — screenAI refuses to run if ANTHROPIC_API_KEY or
 OPENAI_API_KEY is set, so you can never be silently billed per-token.
 
-**Benchmark your engines**: `python3 -m rewisp bench` runs a set of questions
+**Benchmark your engines**: `python3 -m screenai bench` runs a set of questions
 against your real memory through every engine you've set up and prints them
 side by side with an agreement score, so you can see who answers best on your data.
 
@@ -60,7 +60,7 @@ one-time macOS automation consent for it right there.
 ### Pause capture
 - **Cmd+Option+P** — global pause/resume toggle (works anywhere)
 - Menu bar → **Pause** button (icon switches to the pause badge)
-- `rewisp pause` / `rewisp resume` in terminal
+- `screenai pause` / `screenai resume` in terminal
 
 ### Saw something you want forgotten?
 Menu bar → **Forget 10 min** — deletes everything captured in the last 10 minutes.
@@ -68,9 +68,9 @@ Menu bar → **Forget 10 min** — deletes everything captured in the last 10 mi
 ### The Vault (your personal info)
 Main window → **Vault** tab: drag files in, delete with the trash button, or
 **Add note** to type something directly (saved as markdown). Formats: `.md` `.txt`
-`.pdf` `.docx`. **Never put passwords, SSN, or card numbers in it** — Rewisp
+`.pdf` `.docx`. **Never put passwords, SSN, or card numbers in it** — screenAI
 refuses files that look like they contain credentials and tells you why.
-`rewisp-vault` in a terminal still opens the folder directly.
+`screenai-vault` in a terminal still opens the folder directly.
 
 Vault beats screen history: if they conflict, the Vault answer wins.
 
@@ -78,17 +78,17 @@ The Vault tab is **locked behind Touch ID** (or your login password) — it hold
 your most sensitive facts, so opening it prompts for authentication each visit.
 If your Mac has no biometric or password enrolled, the Vault opens normally.
 
-### Memory (what Rewisp learns about you)
+### Memory (what screenAI learns about you)
 Main window → **Memory** tab: approve ✓ or delete ✕ pending facts the digest
 proposed. Confirmed facts are used as context in every answer. The file behind it
-is `~/Rewisp/memory.md` — plain markdown, yours to edit. Rewisp never confirms
+is `~/screenAI/memory.md` — plain markdown, yours to edit. screenAI never confirms
 anything on its own.
 
 ---
 
 ## Thinking features (new in 0.8)
 
-Rewisp doesn't just store your screen — it reasons over it. These run locally
+screenAI doesn't just store your screen — it reasons over it. These run locally
 and free.
 
 ### Meaning-based search
@@ -99,17 +99,17 @@ fuse keyword + meaning ranking. If the embedder is offline it silently falls bac
 to keyword search.
 
 And when a search truly misses, you don't get a dead end: the answer includes
-**"Closest moments in your memory"** — the three nearest things Rewisp did see,
+**"Closest moments in your memory"** — the three nearest things screenAI did see,
 with app and time — because half the time you just misremembered the wording.
 
 ### "What changed on this page?"
-Because Rewisp stores every version of a page as text, it can diff them. On any
+Because screenAI stores every version of a page as text, it can diff them. On any
 page you revisit, ⌘⇧Space → *"what changed on this page?"* or *"what's new here
 since Tuesday?"* → it shows what was **added / changed / removed** (a **Delta**
 badge marks these). Numbers that moved (a price, a grade) are called out.
 
 ### Promises
-Rewisp catches commitments off your screen — *"I'll send mavi the doc"*, *"email
+screenAI catches commitments off your screen — *"I'll send mavi the doc"*, *"email
 manvi by end of today"*, *"call dona today"* — and pins them to **Today →
 Promises** as little slips: what **you owe** and what you're **waiting on**. You
 never type them. Tap ✓ to confirm, ✕ to dismiss; confirmed ones get a **Done**
@@ -124,7 +124,7 @@ small pill slides down from the menu bar with the full commitment — one remind
 per day, never spam. Pending slips you never confirmed stay silent.
 
 ### Numbers over time
-Any label+number Rewisp sees repeatedly — a weight, a grade, a price, tracked
+Any label+number screenAI sees repeatedly — a weight, a grade, a price, tracked
 hours — becomes a **series** on **Today → Tracked** with a sparkline, once it's
 seen 3+ times with variance. Ask *"how has my weight moved?"* → current value,
 change, and recent points, charted from your own screen. No integrations.
@@ -136,7 +136,7 @@ on your screen + your history** — a page you've seen before offers *"What chan
 on this page?"*, a terminal error offers *"Have I seen this error before?"*.
 
 ### Memory that consolidates + strengthens
-Each night Rewisp folds older wisps into **episodes** (short summaries of a
+Each night screenAI folds older wisps into **episodes** (short summaries of a
 session), so long-term recall stays fast — see the layers in **Settings → Your
 data → Memory layers** (raw wisps → episodes), with a **Consolidate now** button.
 Wisps you actually ask about get **reinforced** (they rank higher and survive
@@ -144,7 +144,7 @@ longer). Fully local, no extra AI call.
 
 ### It learns how you forget
 Every failed search and re-asked question is a documented forgetting event —
-Rewisp fits **your own forgetting curve** per kind of fact (names, numbers,
+screenAI fits **your own forgetting curve** per kind of fact (names, numbers,
 links, dates, places) and shows it in **Settings → Your data → How you forget**:
 five decay curves with "half-gone in ~N days" dots, drawn from your real slips.
 Two things act on it automatically:
@@ -152,11 +152,11 @@ Two things act on it automatically:
   rescue mention in the nightly digest, timed right before it crosses your
   predicted forgetting cliff (the same trick that makes spaced repetition work).
 - **Pinned** — the ~3rd time you look up the same stable fact (a wifi password,
-  a door code, a link), Rewisp pins it: answered instantly, exactly, forever.
+  a door code, a link), screenAI pins it: answered instantly, exactly, forever.
   Time-dependent questions ("what did I do yesterday") are never pinned.
 
 ### Proactive recall (off by default)
-When the screen relates to something you saw before, Rewisp can slide a small
+When the screen relates to something you saw before, screenAI can slide a small
 **nudge pill** down from the menu bar — hover it to expand into the memory, 👍/👎
 to tune it. It's **off by default**; enable it in **Settings → Notifications →
 Proactive nudges**, and use **Send test nudge** there to see it. Detection is
@@ -194,19 +194,19 @@ macOS automation consent prompt.
 ### Form assist
 Focused a form field, forgot the value? Hit ⌘⇧Space — the panel notices the
 field behind it ("You were in a 'Email' field") and offers **Find mine**, which
-looks it up in your Vault/history with a Copy button. Rewisp never types into
+looks it up in your Vault/history with a Copy button. screenAI never types into
 or submits forms — you paste it yourself.
 
 ### Connect to AI agents (MCP)
-Rewisp can hand its memory to **Claude Desktop, Claude Code, or any MCP client**
+screenAI can hand its memory to **Claude Desktop, Claude Code, or any MCP client**
 so an agent can search your screen history, diff pages, and read your promises
 while it works. It's a dedicated section: **Settings → Connect agents**, with a
 live status banner that turns green the moment an agent first queries.
 
 Three ways to set it up (all in that section):
-- **Claude Desktop** — click **Add to Claude Desktop**; Rewisp writes the config
-  for you. Quit and reopen Claude Desktop and "rewisp" shows under its Connectors.
-- **Claude Code** — copy the one-line `claude mcp add rewisp …` command into a terminal.
+- **Claude Desktop** — click **Add to Claude Desktop**; screenAI writes the config
+  for you. Quit and reopen Claude Desktop and "screenai" shows under its Connectors.
+- **Claude Code** — copy the one-line `claude mcp add screenai …` command into a terminal.
 - **Other client** — copy the raw `mcpServers` JSON block into your client's config.
 
 **Test it:** ask the agent *"What did I work on yesterday?"* or *"What have I
@@ -224,45 +224,45 @@ Vault" in that section.
 ## Terminal reference
 
 ```
-rewisp ask "what was that github repo from tuesday"
-rewisp search <keyword>       fast FTS search, no AI call
-rewisp status                 capture count, DB size, paused?
-rewisp pause | resume
-rewisp digest                 run tonight's digest early (once/day guard; --force to redo)
-rewisp memory                 show confirmed + pending memory
-rewisp vault | rewisp-vault   open vault folder + reindex
-rewisp embed-backfill         compute semantic fingerprints for old wisps
-rewisp dream                  consolidate aged wisps into episodes now
-rewisp mcp                    MCP server for AI agents (read-only, stdio)
+screenai ask "what was that github repo from tuesday"
+screenai search <keyword>       fast FTS search, no AI call
+screenai status                 capture count, DB size, paused?
+screenai pause | resume
+screenai digest                 run tonight's digest early (once/day guard; --force to redo)
+screenai memory                 show confirmed + pending memory
+screenai vault | screenai-vault   open vault folder + reindex
+screenai embed-backfill         compute semantic fingerprints for old wisps
+screenai dream                  consolidate aged wisps into episodes now
+screenai mcp                    MCP server for AI agents (read-only, stdio)
 ```
 
 ## Files & places
 
 | Path | What |
 |---|---|
-| `~/Rewisp/rewisp.db` | all captured text (SQLite, local only) |
-| `~/Rewisp/memory.md` | learned memory — yours to edit |
-| `~/Rewisp/vault/` | your personal info files |
-| `~/Rewisp/.api_token` | secret the app uses to talk to the daemon (don't share) |
-| `~/Rewisp/daemon.log` | live activity log (`tail -f` it) |
-| `~/Rewisp/digest_log.jsonl` | digest call history (one/day, watch usage here) |
-| `~/Code/Rewisp/` | source code + docs |
+| `~/screenAI/screenai.db` | all captured text (SQLite, local only) |
+| `~/screenAI/memory.md` | learned memory — yours to edit |
+| `~/screenAI/vault/` | your personal info files |
+| `~/screenAI/.api_token` | secret the app uses to talk to the daemon (don't share) |
+| `~/screenAI/daemon.log` | live activity log (`tail -f` it) |
+| `~/screenAI/digest_log.jsonl` | digest call history (one/day, watch usage here) |
+| `~/Code/screenAI/` | source code + docs |
 
 ## If something's off
 
-- **Menu bar says daemon isn't running** → `launchctl kickstart -k gui/501/com.rewisp.daemon`
+- **Menu bar says daemon isn't running** → `launchctl kickstart -k gui/501/com.screenai.daemon`
 - **Orange permission card** → System Settings → Privacy & Security → Screen Recording → enable **Python**
 - **Ask says "sign in to Claude Code"** → run `claude` in a terminal, sign in
-- **Answers feel stale/wrong** → check the cited source timestamps; Rewisp only
+- **Answers feel stale/wrong** → check the cited source timestamps; screenAI only
   answers from what it saw — "not found in your memory" means it truly wasn't on screen
-- **Hotkeys dead** → menu bar app running? `open /Applications/Rewisp.app`
+- **Hotkeys dead** → menu bar app running? `open /Applications/screenAI.app`
 - **"unauthorized" from the API** → app and daemon disagree on the token; restart both
-  (`launchctl kickstart -k gui/501/com.rewisp.daemon`, then relaunch Rewisp.app)
+  (`launchctl kickstart -k gui/501/com.screenai.daemon`, then relaunch screenAI.app)
 
 ## Privacy model, one paragraph
 
 Screenshots never touch disk — OCR happens in memory, image released immediately.
-Only text is stored, locally, in SQLite (`~/Rewisp`, readable only by you). Kill-list
+Only text is stored, locally, in SQLite (`~/screenAI`, readable only by you). Kill-list
 apps are never captured at all. Quick answers are generated on-device. Nothing leaves
 the Mac except question context sent to Claude when the on-device model can't answer,
 and one digest call at 9 PM. Raw capture text auto-deletes after ~6 months. No API

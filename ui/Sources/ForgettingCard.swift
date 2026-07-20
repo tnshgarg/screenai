@@ -4,13 +4,13 @@ import SwiftUI
 // kind of fact (names, numbers, links, dates, places) — drawn from your own
 // failed searches and re-asks. Curves animate in left→right; each ends with a
 // dot at the "half-gone" point. Below: what's about to fade (pulsing), and the
-// facts Rewisp pinned because you kept asking for them.
+// facts screenAI pinned because you kept asking for them.
 //
 // Nobody has ever shown a person their own measured forgetting curve from real
 // life. This is that card.
 
 struct ForgettingCard: View {
-    @State private var data: RewispAPI.Forgetting?
+    @State private var data: screenAIAPI.Forgetting?
     @State private var drawn = false
 
     private let order = ["name", "number", "link", "date", "place"]
@@ -65,13 +65,13 @@ struct ForgettingCard: View {
             }
         }
         .task {
-            data = try? await RewispAPI.get("forgetting", as: RewispAPI.Forgetting.self)
+            data = try? await screenAIAPI.get("forgetting", as: screenAIAPI.Forgetting.self)
             withAnimation(.easeOut(duration: 1.4)) { drawn = true }
         }
     }
 
     // ── the curves ──────────────────────────────────────────────────────────
-    private func curveChart(_ d: RewispAPI.Forgetting) -> some View {
+    private func curveChart(_ d: screenAIAPI.Forgetting) -> some View {
         GeometryReader { geo in
             let w = geo.size.width, h = geo.size.height
             ZStack(alignment: .topLeading) {
@@ -115,7 +115,7 @@ struct ForgettingCard: View {
         }
     }
 
-    private func legend(_ d: RewispAPI.Forgetting) -> some View {
+    private func legend(_ d: screenAIAPI.Forgetting) -> some View {
         HStack(spacing: 12) {
             ForEach(order, id: \.self) { cat in
                 if let c = d.signature[cat] {
@@ -138,7 +138,7 @@ struct ForgettingCard: View {
 
 // A fading memory: snippet with a slow opacity "breath" — literally fading.
 private struct FadingRow: View {
-    let wisp: RewispAPI.FadingWisp
+    let wisp: screenAIAPI.FadingWisp
     let tint: Color
     @State private var dim = false
 

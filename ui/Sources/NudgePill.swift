@@ -33,9 +33,9 @@ final class NudgePillController: NSObject {
     private func poll() {
         guard !showing else { return }   // one at a time; next poll picks up the rest
         Task { @MainActor in
-            guard let n = try? await RewispAPI.get("nudges", as: RewispAPI.Nudges.self),
+            guard let n = try? await screenAIAPI.get("nudges", as: screenAIAPI.Nudges.self),
                   let first = n.nudges.first else { return }
-            try? await RewispAPI.post("nudge/delivered", body: ["id": first.id])
+            try? await screenAIAPI.post("nudge/delivered", body: ["id": first.id])
             self.present(NudgeItem(id: first.id, type: first.type,
                                    title: first.title, body: first.body))
         }
@@ -99,7 +99,7 @@ final class NudgePillController: NSObject {
     }
 
     private func vote(_ id: Int, _ v: String) {
-        Task { await (try? RewispAPI.post("nudge/feedback", body: ["id": id, "vote": v])) }
+        Task { await (try? screenAIAPI.post("nudge/feedback", body: ["id": id, "vote": v])) }
         dismiss()
     }
 

@@ -7,7 +7,7 @@ import time
 from . import browser, config, db, screen
 from .killlist import KillList
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 # Live capture state, read by the HTTP API (same process) for the menu bar icon.
 STATE = {"capture": "starting"}
@@ -112,13 +112,13 @@ class Daemon:
         if not app:
             return
 
-        # Never capture Rewisp's own UI. The search panel and chat would otherwise
+        # Never capture screenAI's own UI. The search panel and chat would otherwise
         # index the questions you type as if they were memories — a feedback loop
         # that pollutes retrieval (you ask "what did I search?" and it finds your
         # own past questions). The digest is already stored separately.
         # Same for pseudo-apps (Dock/Mission Control): clicking the Dock makes the
         # whole desktop "frontmost" and stores a junk desktop capture.
-        if app == "Rewisp" or app in config.CAPTURE_SKIP_APPS:
+        if app == "screenAI" or app in config.CAPTURE_SKIP_APPS:
             STATE["capture"] = "idle"
             return
 
@@ -156,7 +156,7 @@ class Daemon:
             try:
                 from . import form
                 field = form.focused()
-                if field and field.get("app") not in (None, "Rewisp"):
+                if field and field.get("app") not in (None, "screenAI"):
                     STATE["last_field"] = {**field, "ts": time.time()}
             except Exception:  # helper unavailable — feature just stays off
                 pass
@@ -215,7 +215,7 @@ class Daemon:
                 log.exception("capture error")
 
     def run(self) -> None:
-        log.info("rewisp daemon starting (db=%s)", config.DB_PATH)
+        log.info("screenai daemon starting (db=%s)", config.DB_PATH)
         # API and hotkey come up first so the UI works (and can explain the
         # permission state) even while capture is blocked on Screen Recording.
         from . import hotkey, server
@@ -223,9 +223,9 @@ class Daemon:
         server.start()
         if not screen.has_screen_recording_permission():
             print(
-                "\nRewisp needs Screen Recording permission to capture your screen.\n\n"
+                "\nscreenAI needs Screen Recording permission to capture your screen.\n\n"
                 "  1. Open System Settings > Privacy & Security > Screen & System Audio Recording\n"
-                "  2. Enable it for the app Rewisp runs as (under launchd this is 'Python';\n"
+                "  2. Enable it for the app screenAI runs as (under launchd this is 'Python';\n"
                 "     add /Library/Frameworks/Python.framework/Versions/3.13/Resources/Python.app\n"
                 "     with the + button if it isn't listed)\n\n"
                 "A system prompt may appear now — 'Allow' works too.\n"

@@ -15,7 +15,7 @@ struct HelpTab: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 HStack(alignment: .top) {
-                    TabHeader(title: "Help", subtitle: "How Rewisp works — answers, shortcuts, and the full manual.")
+                    TabHeader(title: "Help", subtitle: "How screenAI works — answers, shortcuts, and the full manual.")
                     Spacer()
                     Button { showReport = true } label: {
                         Label("Report a bug", systemImage: "ladybug.fill")
@@ -211,7 +211,7 @@ struct HelpTab: View {
         }
         // dev fallback: running via swiftc outside the bundle
         let devPath = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Code/Rewisp/docs/MANUAL.md")
+            .appendingPathComponent("Code/screenAI/docs/MANUAL.md")
         return (try? String(contentsOf: devPath, encoding: .utf8))
             ?? "Manual not found in this build."
     }
@@ -224,37 +224,37 @@ enum HelpContent {
     struct Shortcut { let what: String; let keys: [String] }
 
     static let faq: [QA] = [
-        .init(q: "How do I ask Rewisp a question?",
+        .init(q: "How do I ask screenAI a question?",
               a: "Press **⌘⇧Space** anywhere to open the search bar, type a plain-English question, and hit Enter. Or use the **Chat** tab for a longer conversation. Try things like *“what was that repo on Tuesday?”* or *“what’s my advisor’s email?”*"),
         .init(q: "What exactly is a “wisp”?",
-              a: "A wisp is a text snapshot of your screen. When something meaningful changes, Rewisp reads the text on screen (locally) and stores just that — the screenshot itself is **never saved**."),
+              a: "A wisp is a text snapshot of your screen. When something meaningful changes, screenAI reads the text on screen (locally) and stores just that — the screenshot itself is **never saved**."),
         .init(q: "Is my data private?",
               a: "Yes, by design. Screenshots are read in memory and discarded — never written to disk. Everything stays in one file on this Mac. Quick answers run on Apple’s on-device model. Messages, banking sites, password apps, and private windows are never captured at all."),
         .init(q: "How does form autofill work?",
-              a: "On any signup or checkout page, press **⌘⇧Space** — Rewisp reads the fields and fills them from your Vault. It **never fills passwords or card numbers, and never submits** the form. You review and send."),
+              a: "On any signup or checkout page, press **⌘⇧Space** — screenAI reads the fields and fills them from your Vault. It **never fills passwords or card numbers, and never submits** the form. You review and send."),
         .init(q: "Which AI answers my questions?",
-              a: "Apple’s free on-device model tries first (private, instant). If it comes up short, Rewisp escalates to whatever you’ve set up — Claude, ChatGPT, free Gemini, or a local model. A badge on each answer shows who replied."),
+              a: "Apple’s free on-device model tries first (private, instant). If it comes up short, screenAI escalates to whatever you’ve set up — Claude, ChatGPT, free Gemini, or a local model. A badge on each answer shows who replied."),
         .init(q: "Does it cost anything?",
-              a: "No. Rewisp only uses subscriptions you already have or free keys — never a paid per-token API key. It refuses to run if a billable API key is set, so you can’t be surprised by a charge."),
+              a: "No. screenAI only uses subscriptions you already have or free keys — never a paid per-token API key. It refuses to run if a billable API key is set, so you can’t be surprised by a charge."),
         .init(q: "Can I make it forget something?",
               a: "Yes. Menu bar → **Forget 10 min** wipes the last ten minutes. You can also pause capture with **⌘⌥P**. Everything auto-expires after about six months regardless."),
         .init(q: "What are Promises and how do they show up?",
-              a: "Rewisp notices when you commit to something in places you write — Notes, Mail, Slack, Discord (*“I’ll send it Friday”*) — and holds it on **Today → Promises**. You never type them. **Confirming a promise arms its reminder**: on the due day a small pill slides down with the full commitment, once a day until you mark it done. AI chats, editors, and ads can never create promises."),
+              a: "screenAI notices when you commit to something in places you write — Notes, Mail, Slack, Discord (*“I’ll send it Friday”*) — and holds it on **Today → Promises**. You never type them. **Confirming a promise arms its reminder**: on the due day a small pill slides down with the full commitment, once a day until you mark it done. AI chats, editors, and ads can never create promises."),
         .init(q: "What is “How you forget”?",
-              a: "Rewisp treats every failed search and re-asked question as evidence of what *you* forget, and fits your personal forgetting curve per kind of fact — see **Settings → Your data**. Things you saw once get a rescue mention in the digest right before they fade, and a fact you’ve looked up ~3 times gets **pinned** — answered instantly, forever."),
+              a: "screenAI treats every failed search and re-asked question as evidence of what *you* forget, and fits your personal forgetting curve per kind of fact — see **Settings → Your data**. Things you saw once get a rescue mention in the digest right before they fade, and a fact you’ve looked up ~3 times gets **pinned** — answered instantly, forever."),
         .init(q: "Why does it sometimes say “not found in your memory”?",
-              a: "Rewisp only answers from what it actually saw on your screen — it won’t guess. And a miss isn’t a dead end: it shows **Closest moments in your memory**, the nearest things it did see, since half the time the wording was just remembered differently."),
+              a: "screenAI only answers from what it actually saw on your screen — it won’t guess. And a miss isn’t a dead end: it shows **Closest moments in your memory**, the nearest things it did see, since half the time the wording was just remembered differently."),
     ]
 
     static let troubleshooting: [QA] = [
         .init(q: "The menu bar says the daemon isn’t running",
-              a: "Run this in Terminal: `launchctl kickstart -k gui/$(id -u)/com.rewisp.daemon`. Then reopen Rewisp from Applications."),
+              a: "Run this in Terminal: `launchctl kickstart -k gui/$(id -u)/com.screenai.daemon`. Then reopen screenAI from Applications."),
         .init(q: "It’s not capturing anything",
-              a: "Rewisp needs Screen Recording permission. Open System Settings → Privacy & Security → Screen & System Audio Recording and enable **Python**. Also check you’re not paused (⌘⌥P)."),
+              a: "screenAI needs Screen Recording permission. Open System Settings → Privacy & Security → Screen & System Audio Recording and enable **Python**. Also check you’re not paused (⌘⌥P)."),
         .init(q: "Answers feel stale or wrong",
-              a: "Check the source timestamp on the answer — Rewisp only knows what it saw. If an answer is thin, try rephrasing, or switch your engine in Settings → Answers."),
+              a: "Check the source timestamp on the answer — screenAI only knows what it saw. If an answer is thin, try rephrasing, or switch your engine in Settings → Answers."),
         .init(q: "The search panel won’t appear",
-              a: "Make sure the menu bar app is running (open Rewisp from Applications). The shortcut is ⌘⇧Space; you can’t currently rebind it."),
+              a: "Make sure the menu bar app is running (open screenAI from Applications). The shortcut is ⌘⇧Space; you can’t currently rebind it."),
     ]
 
     static let shortcuts: [Shortcut] = [
@@ -610,7 +610,7 @@ struct BugReportSheet: View {
     private var diagnostics: String {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         let os = ProcessInfo.processInfo.operatingSystemVersionString
-        return "Rewisp \(version) · macOS \(os) · on-device: \(AskEngine.onDeviceAvailable ? "available" : "unavailable")"
+        return "screenAI \(version) · macOS \(os) · on-device: \(AskEngine.onDeviceAvailable ? "available" : "unavailable")"
     }
 
     private var fullReport: String {
@@ -621,7 +621,7 @@ struct BugReportSheet: View {
         var comps = URLComponents()
         comps.scheme = "mailto"
         comps.path = "ybhaverisetti@ucsd.edu"
-        comps.queryItems = [.init(name: "subject", value: "Rewisp bug report"),
+        comps.queryItems = [.init(name: "subject", value: "screenAI bug report"),
                             .init(name: "body", value: fullReport)]
         if let url = comps.url { NSWorkspace.shared.open(url) }
         dismiss()

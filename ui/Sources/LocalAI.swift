@@ -8,19 +8,19 @@ import SwiftUI
 final class LocalAIStore: ObservableObject {
     static let shared = LocalAIStore()
 
-    @Published var rec: RewispAPI.HardwareRec?
-    @Published var status: RewispAPI.LocalStatus?
+    @Published var rec: screenAIAPI.HardwareRec?
+    @Published var status: screenAIAPI.LocalStatus?
     @Published var busy = false
 
     private var polling = false
 
     func refresh() async {
-        rec = try? await RewispAPI.get("hardware", as: RewispAPI.HardwareRec.self)
-        status = try? await RewispAPI.get("local/status", as: RewispAPI.LocalStatus.self)
+        rec = try? await screenAIAPI.get("hardware", as: screenAIAPI.HardwareRec.self)
+        status = try? await screenAIAPI.get("local/status", as: screenAIAPI.LocalStatus.self)
     }
 
     // Ordered model list, biggest tier first, for a stable UI.
-    var models: [(id: String, m: RewispAPI.LocalModel)] {
+    var models: [(id: String, m: screenAIAPI.LocalModel)] {
         (rec?.models ?? status?.models ?? [:])
             .map { ($0.key, $0.value) }
             .sorted { $0.1.tier > $1.1.tier }
@@ -33,7 +33,7 @@ final class LocalAIStore: ObservableObject {
     func download(_ id: String) {
         Task { @MainActor in
             busy = true
-            _ = try? await RewispAPI.post("local/download", body: ["model": id])
+            _ = try? await screenAIAPI.post("local/download", body: ["model": id])
             await pollDownload()
             busy = false
         }
@@ -42,7 +42,7 @@ final class LocalAIStore: ObservableObject {
     func delete(_ id: String) {
         Task { @MainActor in
             busy = true
-            _ = try? await RewispAPI.post("local/delete", body: ["model": id])
+            _ = try? await screenAIAPI.post("local/delete", body: ["model": id])
             await refresh()
             busy = false
         }
@@ -66,7 +66,7 @@ final class LocalAIStore: ObservableObject {
 struct LocalModelSetup: View {
     @ObservedObject var store = LocalAIStore.shared
     var compact = false          // onboarding = compact
-    @AppStorage("rewisp.ondevice") private var onDeviceFirst = true
+    @AppStorage("screenai.ondevice") private var onDeviceFirst = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -89,7 +89,7 @@ struct LocalModelSetup: View {
                     Text("Downloading \(store.label(d.model)) — \(d.pct)%")
                         .font(.caption.weight(.medium))
                     ProgressView(value: Double(d.pct), total: 100)
-                    Text("First download also installs the local AI runtime — this can take a few minutes. You can keep using Rewisp.")
+                    Text("First download also installs the local AI runtime — this can take a few minutes. You can keep using screenAI.")
                         .font(.caption2).foregroundStyle(.tertiary)
                 }
                 .padding(10)
@@ -113,7 +113,7 @@ struct LocalModelSetup: View {
     }
 
     @ViewBuilder
-    private func modelRow(_ id: String, _ m: RewispAPI.LocalModel) -> some View {
+    private func modelRow(_ id: String, _ m: screenAIAPI.LocalModel) -> some View {
         let installed = store.isInstalled(id)
         let active = store.activeModel == id
         let recommended = store.recommendedId == id
@@ -165,7 +165,7 @@ struct LocalModelSetup: View {
 
     private func setActive(_ id: String) {
         Task { @MainActor in
-            _ = try? await RewispAPI.post("settings", body: ["local_model": id])
+            _ = try? await screenAIAPI.post("settings", body: ["local_model": id])
             await store.refresh()
         }
     }

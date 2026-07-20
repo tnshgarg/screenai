@@ -1,6 +1,6 @@
-# Rewisp — Research: where the real edge is
+# screenAI — Research: where the real edge is
 
-*Written 2026-07-19. Goal: Rewisp works as a standalone product, but "another ambient
+*Written 2026-07-19. Goal: screenAI works as a standalone product, but "another ambient
 memory app" is a crowded, dying category. This doc finds the differentiators — features
 that are **hard to build, barely researched, and un-copied** — by reading across memory
 science, the competitive frontier, HCI/lifelogging research, and the on-device ML edge.
@@ -23,13 +23,13 @@ The most important sentence I found, from Screenpipe's own blog:
 > most systems fall apart."**
 
 Nobody has won synthesis. **Everyone builds a better filing cabinet; nobody builds a
-mind.** That's the whole opening — and it's exactly the axis Rewisp already turned onto
+mind.** That's the whole opening — and it's exactly the axis screenAI already turned onto
 (delta, promises, forgetting model). The differentiators below all push *further* down the
 synthesis axis, into territory the science says is real but no product has touched.
 
 ---
 
-## Part 2 — Rewisp's structural moat (why *we* can do these and they can't)
+## Part 2 — screenAI's structural moat (why *we* can do these and they can't)
 
 1. **Text over time, not video.** Diffing, tracking numbers, entity graphs, and
    consolidation are trivial on text and near-impossible on video (compute-prohibitive to
@@ -56,33 +56,33 @@ ambient-memory *product*. Each principle below is a lever competitors don't even
 - **Retrieval is reconstructive and *labile*.** [Reconsolidation research](https://pmc.ncbi.nlm.nih.gov/articles/PMC5605913/):
   every time you recall something, the memory becomes editable and can be *changed* — and
   your brain silently rewrites it. Implication: your memory of your own past is provably
-  unreliable, and Rewisp holds the un-rewritten copy. (This is the basis of the "decision
+  unreliable, and screenAI holds the un-rewritten copy. (This is the basis of the "decision
   provenance" idea in FABLE5-THOUGHTS.)
 - **Context-dependent memory / encoding specificity.** [Recall is dramatically better when
   the cues at encoding are present at retrieval](https://en.wikipedia.org/wiki/Context-dependent_memory)
   (the scuba-diver studies). Revisiting an environment surfaces memories you thought were
-  gone. Rewisp can *reinstate your context* — show the exact screen-state you were in — to
+  gone. screenAI can *reinstate your context* — show the exact screen-state you were in — to
   trigger recall no keyword search ever could.
 - **We remember the *source*, not the content.** The [Google effect / Sparrow-Wegner 2011](https://en.wikipedia.org/wiki/Google_effect):
   when we expect to look something up, we remember *where* it is, not *what* it is. Humans
   already treat machines as [transactive memory](https://pmc.ncbi.nlm.nih.gov/articles/PMC4419599/)
-  partners. Rewisp's job is to be the *reliable, contextual* half of that partnership —
+  partners. screenAI's job is to be the *reliable, contextual* half of that partnership —
   better than Google because it knows your context.
 - **The testing effect** — [retrieval practice beats passive review by 30–50%](https://recallify.ai/evidence-for-active-recall-and-spaced-repetition/)
   — **but a crucial caveat**: it [does *not* persist for autobiographical memory](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5976790/).
   So "quiz me on my life" fails; "quiz me on the article/doc I read" works. Sharp line.
 - **Metamemory: tip-of-the-tongue and feeling-of-knowing.** [People can sense they know
   something they can't retrieve](https://pmc.ncbi.nlm.nih.gov/articles/PMC12047626/), and
-  these states predict retrieval success. If Rewisp could *detect* a TOT/FOK state from
+  these states predict retrieval success. If screenAI could *detect* a TOT/FOK state from
   behavior (hesitation, partial search, re-typing), it could rescue the word at the exact
   moment of the gap.
 - **Involuntary autobiographical memory.** [Cue-triggered, spontaneous, most frequent
   during diffuse-attention / idle moments, mostly positive+mundane recent events](https://pmc.ncbi.nlm.nih.gov/articles/PMC4552601/).
-  Rewisp's nudge is *artificial involuntary memory* — and the science says *when* to fire
+  screenAI's nudge is *artificial involuntary memory* — and the science says *when* to fire
   it (idle) and *what* to surface (present-cue-relevant, recent, positive).
 - **Targeted memory reactivation.** [Re-presenting a learning cue strengthens that specific
   memory](https://pmc.ncbi.nlm.nih.gov/articles/PMC9649863/) (studied during sleep, but the
-  cueing principle is general). Rewisp deciding *what to re-surface* is a waking analogue.
+  cueing principle is general). screenAI deciding *what to re-surface* is a waking analogue.
 - **Memory's real purpose is future simulation.** [Episodic memory and imagining the future
   share one neural system](https://pmc.ncbi.nlm.nih.gov/articles/PMC2666704/); memory exists
   to **simulate scenarios and make better decisions**, not to recall accurately. This is the
@@ -133,26 +133,26 @@ you're fine. It's a signal-detection problem on top of an interruption-UX proble
 they were*, the review that tipped you), and it can *contradict your rewritten memory*.
 **Science:** [reconsolidation](https://pmc.ncbi.nlm.nih.gov/articles/PMC5605913/) +
 [choice-supportive misremembering](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2017.02062/full)
-— your memory of your decisions is *systematically falsified*, and Rewisp holds the truth.
+— your memory of your decisions is *systematically falsified*, and screenAI holds the truth.
 **Moat:** backward evidence-chaining over text + numbers + embeddings — a few queries for us,
 weeks of video review for them. (Full plan already in FABLE5-THOUGHTS §4.1.)
 **Hard because:** detecting decision moments and reliably chaining the *causal* evidence
 (vs. merely co-occurring) is genuinely open research.
 
 ### D. Memory as Future-Simulator — decide, don't just recall
-**Idea:** the endgame. "Should I take this?" → Rewisp simulates from your own history:
+**Idea:** the endgame. "Should I take this?" → screenAI simulates from your own history:
 "last two times you took on a Fri-deadline project mid-quarter, you missed it; here's what
 that week looked like." A memory that runs *what-ifs* on your past to inform the future.
 **Science:** [episodic memory and future simulation are one system; memory exists to
 simulate and decide](https://pmc.ncbi.nlm.nih.gov/articles/PMC2666704/), not to recall.
 **Moat:** this is the *purpose* of memory, and literally no memory product attempts it. It's
-the deepest possible differentiator — "Rewisp doesn't remember your past, it uses it."
+the deepest possible differentiator — "screenAI doesn't remember your past, it uses it."
 **Hard because:** requires pattern-mining outcomes over long horizons and generating
 faithful, non-hallucinated simulations — the hardest thing in this doc, and mostly
 un-attempted anywhere. High bar; high payoff.
 
 ### E. Self-generating Retrieval Practice (the *right* slice)
-**Idea:** for **factual content you read** (docs, articles, specs) — not your life — Rewisp
+**Idea:** for **factual content you read** (docs, articles, specs) — not your life — screenAI
 quietly builds spaced retrieval prompts so it *sticks*, no flashcard authoring. Turns
 passive reading into durable knowledge automatically.
 **Science:** [testing effect +30–50%](https://recallify.ai/evidence-for-active-recall-and-spaced-repetition/),
@@ -160,7 +160,7 @@ scheduled by your *own* [personal forgetting curve](https://pmc.ncbi.nlm.nih.gov
 (which we already fit). **Critically bounded** by the finding that [it doesn't work on
 autobiographical memory](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5976790/) — so this
 must target read-content only.
-**Moat:** every spaced-repetition tool needs manual card creation; Rewisp already has the
+**Moat:** every spaced-repetition tool needs manual card creation; screenAI already has the
 content *and* your personal curve, so it's zero-effort. Anki-class tools can't follow (no
 ambient content); ambient tools can't follow (no learning model).
 **Hard because:** deciding *what's worth remembering* (vs. noise) and generating good
@@ -193,7 +193,7 @@ gives the exact math, validated on **4.28M Duolingo observations**:
 - Best variant **C-HLR+**: **p = 2^(−(Δt/ĥ)^C)** — a complexity term `C` makes hard items'
   curves *steeper*. This beat plain HLR substantially.
 - Stated limit: a single user-difficulty scalar isn't enough; they want **high-dimensional
-  user embeddings**. → **We already compute per-wisp embeddings.** So Rewisp can do the
+  user embeddings**. → **We already compute per-wisp embeddings.** So screenAI can do the
   thing the paper says it *couldn't*: fit the forgetting curve with real content embeddings,
   not just hand-features. That's a concrete, novel upgrade to the shipped forgetting model.
 
@@ -204,7 +204,7 @@ is blunt: **retrieval alone does NOT make a memory editable — you need a predi
 ~10 min post-reactivation ≫ at 6 h). And crucially, **the clinical "edit the memory" work
 is replication-shaky.** So the *unreliable* framing is "help you rewrite your memory." The
 *reliable, buildable* signal is the **prediction-error itself**: the moment what you now see
-or claim **contradicts Rewisp's record** is the highest-value instant to surface the truth.
+or claim **contradicts screenAI's record** is the highest-value instant to surface the truth.
 Prediction error isn't a bug to fix — it's the **trigger** for the "your memory is off,
 here's the receipt" nudge. This is a firm signal, not a squishy one.
 
@@ -242,10 +242,10 @@ sidesteps it). Latency/on-device specifics unconfirmed — a spike needed.
 ### Transactive memory: humans keep the *pointer*, not the content — design retrieval around that
 The [Sparrow/Liu/Wegner 2011 experiments (via Wikipedia summary of the Science paper)](https://en.wikipedia.org/wiki/Google_effect):
 Exp 3–4 — when people expect info to be saved, **they remember the *location/retrieval path*,
-not the fact**, and tend to remember **either the fact or where it is, not both.** Rewisp is
+not the fact**, and tend to remember **either the fact or where it is, not both.** screenAI is
 the "where." Design implication: retrieval should key on the **cues people actually retain** —
 *roughly when, which app, what I was doing, the source* — not exact wording (which they've
-offloaded). Rewisp wins by being the **reliable, contextual** transactive partner Google
+offloaded). screenAI wins by being the **reliable, contextual** transactive partner Google
 isn't. This is *why* Context Reinstatement (rebuild the where/when/what-around) fits how human
 memory actually offloads.
 
@@ -253,7 +253,7 @@ memory actually offloads.
 
 ## Part 5 — The one big bet, and what to research next
 
-If I had to name **the** differentiator: **Rewisp models *you*, not your screen** — and the
+If I had to name **the** differentiator: **screenAI models *you*, not your screen** — and the
 sharpest expression of that is the pairing of **Context Reinstatement (A)** as the near-term,
 demoable, science-backed win, building toward **Memory-as-Future-Simulator (D)** as the
 category-defining endgame. Both are things the science says are real and no product has done.

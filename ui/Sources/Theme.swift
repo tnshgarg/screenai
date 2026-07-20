@@ -1,6 +1,6 @@
 import SwiftUI
 
-// Rewisp visual system — graphite base, indigo→violet wisp accent (matches the
+// screenAI visual system — graphite base, indigo→violet wisp accent (matches the
 // app icon), soft cards, springs everywhere.
 enum Theme {
     static let accent = Color(red: 0.56, green: 0.64, blue: 1.0)      // #8EA2FF

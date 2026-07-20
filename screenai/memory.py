@@ -1,11 +1,11 @@
-"""Learned memory: ~/Rewisp/memory.md with Confirmed and Pending sections.
+"""Learned memory: ~/screenAI/memory.md with Confirmed and Pending sections.
 Digest appends proposals to Pending only. User promotes/deletes. Never auto-confirm."""
 
 import re
 
 from . import config
 
-TEMPLATE = """# Rewisp memory
+TEMPLATE = """# screenAI memory
 
 ## Confirmed
 
@@ -39,7 +39,7 @@ def confirmed_text() -> str:
 
 
 def _write_sections(confirmed: list[str], pending: list[str]) -> None:
-    text = "# Rewisp memory\n\n## Confirmed\n"
+    text = "# screenAI memory\n\n## Confirmed\n"
     text += "".join(f"- {c}\n" for c in confirmed)
     text += "\n## Pending (approve or delete)\n"
     text += "".join(f"- {p}\n" for p in pending)

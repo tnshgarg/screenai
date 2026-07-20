@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 
 from . import config, db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 # OCR reads the menu bar first, so raw snippets start with "App File Edit View …
 # Help 43% Tue Jul 14" chrome. Strip that leading junk so a recall/nudge shows

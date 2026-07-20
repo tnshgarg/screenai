@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from rewisp import db, embed, forgetting
+from screenai import db, embed, forgetting
 
 
 def _q(conn, text, vec, ago):
@@ -101,7 +101,7 @@ class TestAutoPin:
         v = _vec(7)
         monkeypatch.setattr(forgetting, "_real_embed", None, raising=False)
         import unittest.mock as mock
-        with mock.patch("rewisp.embed.embed", return_value=v.tobytes()):
+        with mock.patch("screenai.embed.embed", return_value=v.tobytes()):
             _q(conn, "office wifi password", v, "-10 days")
             _q(conn, "wifi password office", v, "-5 days")
             _q(conn, "what is the office wifi", v, "-1 minutes")
@@ -117,7 +117,7 @@ class TestAutoPin:
     def test_two_asks_not_enough(self, conn):
         v = _vec(8)
         import unittest.mock as mock
-        with mock.patch("rewisp.embed.embed", return_value=v.tobytes()):
+        with mock.patch("screenai.embed.embed", return_value=v.tobytes()):
             _q(conn, "gym door code", v, "-3 days")
             _q(conn, "door code for the gym", v, "-1 minutes")
             assert forgetting.maybe_pin(conn, "door code for the gym", "4821") is False

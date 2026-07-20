@@ -5,10 +5,10 @@ Apple on-device model (via the compiled ui/AppleAsk bridge) — then has Claude 
 as an impartial judge, scoring each answer 0-100 for how correct and grounded it is
 versus the retrieved context. Prints per-question scores and a final scoreboard.
 
-    python3 -m rewisp bench                 # default question set, graded
-    python3 -m rewisp bench "q1" "q2" ...   # your own questions
-    python3 -m rewisp bench --file q.txt    # one question per line
-    python3 -m rewisp bench --no-grade      # just show answers, skip scoring
+    python3 -m screenai bench                 # default question set, graded
+    python3 -m screenai bench "q1" "q2" ...   # your own questions
+    python3 -m screenai bench --file q.txt    # one question per line
+    python3 -m screenai bench --no-grade      # just show answers, skip scoring
 
 Each engine gets the prompt it uses in production: Apple gets the compact prompt,
 cloud/local engines get the full-context prompt. The judge (Claude) sees the full
@@ -36,7 +36,7 @@ DEFAULT_QUESTIONS = [
     "was there anything I need to follow up on?",
 ]
 
-APPLE_BIN = os.environ.get("REWISP_APPLE_BIN") or str(
+APPLE_BIN = os.environ.get("SCREENAI_APPLE_BIN") or str(
     Path(__file__).resolve().parent.parent / "ui" / "AppleAsk")
 
 
@@ -65,9 +65,9 @@ def _available() -> list[str]:
         out.append("ollama")
     except OSError:
         pass
-    # REWISP_BENCH_ENGINES=apple,local restricts candidates (e.g. to conserve a
+    # SCREENAI_BENCH_ENGINES=apple,local restricts candidates (e.g. to conserve a
     # rate-limited cloud key, or focus a comparison).
-    only = os.environ.get("REWISP_BENCH_ENGINES")
+    only = os.environ.get("SCREENAI_BENCH_ENGINES")
     if only:
         keep = {e.strip() for e in only.split(",")}
         out = [e for e in out if e in keep]

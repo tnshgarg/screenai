@@ -19,17 +19,17 @@ enum AskEngine {
     // usage) vs "always use my chosen engine" for people who want Claude/GPT
     // quality on every question.
     static var preferOnDevice: Bool {
-        UserDefaults.standard.object(forKey: "rewisp.ondevice") as? Bool ?? true
+        UserDefaults.standard.object(forKey: "screenai.ondevice") as? Bool ?? true
     }
 
-    static func ask(_ question: String) async throws -> RewispAPI.AskResult {
+    static func ask(_ question: String) async throws -> screenAIAPI.AskResult {
         if preferOnDevice, onDeviceAvailable, #available(macOS 26.0, *) {
             do {
-                let ctx = try await RewispAPI.context(question)
+                let ctx = try await screenAIAPI.context(question)
                 // Personal fact found deterministically in the Vault — exact
                 // value, no model involved at all.
                 if let f = ctx.fact {
-                    var r = RewispAPI.AskResult()
+                    var r = screenAIAPI.AskResult()
                     r.answer = f.answer
                     r.detail = f.detail
                     r.source = f.source
@@ -40,7 +40,7 @@ enum AskEngine {
                     // the full answer, not just the one-line summary.
                     let logged = [f.answer, f.detail].compactMap { $0 }
                         .filter { !$0.isEmpty }.joined(separator: "\n\n")
-                    await RewispAPI.logChat(question: question, answer: logged)
+                    await screenAIAPI.logChat(question: question, answer: logged)
                     return r
                 }
                 let session = LanguageModelSession()
@@ -53,14 +53,14 @@ enum AskEngine {
                 // Small model whiffed -> escalate to a stronger engine rather than
                 // shrug or, worse, hand back a confident-sounding guess.
                 if let a = r.answer, !onDeviceWhiffed(a, question: question) {
-                    await RewispAPI.logChat(question: question, answer: a)
+                    await screenAIAPI.logChat(question: question, answer: a)
                     return r
                 }
             } catch {
                 // context overflow / guardrails / model busy — Claude picks it up
             }
         }
-        return try await RewispAPI.ask(question)
+        return try await screenAIAPI.ask(question)
     }
 
     // Day-summary questions deserve the rich, structured cloud answer — the 3B
@@ -94,8 +94,8 @@ enum AskEngine {
         return markers.contains { a.contains($0) }
     }
 
-    // Mirror of rewisp/ask.py parse_answer(): split ANSWER/DETAIL/SOURCE/TIME/COPY.
-    static func parseStructured(_ raw: String) -> RewispAPI.AskResult {
+    // Mirror of screenai/ask.py parse_answer(): split ANSWER/DETAIL/SOURCE/TIME/COPY.
+    static func parseStructured(_ raw: String) -> screenAIAPI.AskResult {
         var fields: [String: String] = [:]
         var current: String?
         let keys = ["ANSWER", "DETAIL", "SOURCE", "TIME", "COPY"]
@@ -114,7 +114,7 @@ enum AskEngine {
                 fields[c] = (fields[c] ?? "") + "\n" + s
             }
         }
-        var r = RewispAPI.AskResult()
+        var r = screenAIAPI.AskResult()
         r.answer = fields["ANSWER"] ?? raw.trimmingCharacters(in: .whitespacesAndNewlines)
         r.detail = fields["DETAIL"]
         r.source = fields["SOURCE"]

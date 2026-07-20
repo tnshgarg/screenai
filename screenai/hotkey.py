@@ -11,7 +11,7 @@ import Quartz
 
 from . import config
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 KEYCODE_P = 35
 REQUIRED_FLAGS = Quartz.kCGEventFlagMaskCommand | Quartz.kCGEventFlagMaskAlternate
@@ -60,5 +60,5 @@ def start_listener() -> bool:
         log.info("hotkey: Cmd+Option+P pause toggle active")
         Quartz.CFRunLoopRun()
 
-    threading.Thread(target=run, name="rewisp-hotkey", daemon=True).start()
+    threading.Thread(target=run, name="screenai-hotkey", daemon=True).start()
     return True

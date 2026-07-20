@@ -6,12 +6,12 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var query = ""
-    @State private var result: RewispAPI.AskResult?
+    @State private var result: screenAIAPI.AskResult?
     @State private var asking = false
     @State private var askError: String?
-    @State private var status: RewispAPI.Status?
-    @State private var recap: RewispAPI.Recap?
-    @State private var threads: RewispAPI.Threads?
+    @State private var status: screenAIAPI.Status?
+    @State private var recap: screenAIAPI.Recap?
+    @State private var threads: screenAIAPI.Threads?
     @State private var daemonUp = true
     @FocusState private var searchFocused: Bool
 
@@ -27,7 +27,7 @@ struct DashboardView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.down.circle.fill")
                         .foregroundStyle(.tint)
-                    Text("Rewisp \(updates.latestVersion ?? "") is available")
+                    Text("screenAI \(updates.latestVersion ?? "") is available")
                         .font(.caption.weight(.medium))
                     Spacer()
                     Button("Get update") { updates.openDownload() }
@@ -252,9 +252,9 @@ struct DashboardView: View {
             Image(systemName: "moon.zzz")
                 .font(.title2)
                 .foregroundStyle(.secondary)
-            Text("Rewisp daemon isn't running")
+            Text("screenAI daemon isn't running")
                 .font(.callout.weight(.medium))
-            Text("Start it with:  python3 -m rewisp daemon")
+            Text("Start it with:  python3 -m screenai daemon")
                 .font(.caption.monospaced())
                 .foregroundStyle(.secondary)
         }
@@ -267,7 +267,7 @@ struct DashboardView: View {
             Button {
                 Task { @MainActor in
                     guard let s = status else { return }
-                    try? await RewispAPI.post(s.paused ? "resume" : "pause")
+                    try? await screenAIAPI.post(s.paused ? "resume" : "pause")
                     await refresh()
                     StatusModel.shared.refresh()  // menu bar icon updates immediately
                 }
@@ -281,7 +281,7 @@ struct DashboardView: View {
             .tint(status?.paused == true ? .orange : nil)
 
             Button {
-                Task { @MainActor in try? await RewispAPI.post("delete-recent"); await refresh() }
+                Task { @MainActor in try? await screenAIAPI.post("delete-recent"); await refresh() }
             } label: {
                 Label("Forget 10 min", systemImage: "clock.arrow.circlepath")
                     .font(.caption.weight(.medium))
@@ -320,7 +320,7 @@ struct DashboardView: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.tertiary)
-            .help("Quit Rewisp")
+            .help("Quit screenAI")
         }
     }
 
@@ -335,11 +335,11 @@ struct DashboardView: View {
 
     @MainActor
     private func refresh() async {
-        daemonUp = await RewispAPI.daemonRunning()
+        daemonUp = await screenAIAPI.daemonRunning()
         guard daemonUp else { return }
-        let s = try? await RewispAPI.get("status", as: RewispAPI.Status.self)
-        let r = try? await RewispAPI.get("recap", as: RewispAPI.Recap.self)
-        let t = try? await RewispAPI.get("threads", as: RewispAPI.Threads.self)
+        let s = try? await screenAIAPI.get("status", as: screenAIAPI.Status.self)
+        let r = try? await screenAIAPI.get("recap", as: screenAIAPI.Recap.self)
+        let t = try? await screenAIAPI.get("threads", as: screenAIAPI.Threads.self)
         withAnimation(spring) {
             status = s; recap = r; threads = t
         }

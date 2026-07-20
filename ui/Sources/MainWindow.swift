@@ -18,7 +18,7 @@ final class MainWindowController {
                 contentRect: NSRect(x: 0, y: 0, width: 880, height: 600),
                 styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                 backing: .buffered, defer: false)
-            w.title = "Rewisp"
+            w.title = "screenAI"
             w.titlebarAppearsTransparent = true
             w.titleVisibility = .hidden
             w.isReleasedWhenClosed = false
@@ -39,12 +39,12 @@ final class MainWindowController {
         NSApp.activate(ignoringOtherApps: true)
         // Replay the launch splash on every open (window is reused, so the
         // view's own .task only fires the first time).
-        NotificationCenter.default.post(name: .rewispMainShown, object: nil)
+        NotificationCenter.default.post(name: .screenaiMainShown, object: nil)
     }
 
     // Bring the window back to the front. The Touch ID panel steals focus and
     // drops our window behind other apps' windows when it dismisses; call this
-    // after authentication so the user isn't left hunting for Rewisp.
+    // after authentication so the user isn't left hunting for screenAI.
     func refront() {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
@@ -102,7 +102,7 @@ private struct Sidebar: View {
             HStack(spacing: 9) {
                 WispMark()
                     .frame(width: 26, height: 26)
-                Text("Rewisp")
+                Text("screenAI")
                     .font(.system(size: 17, weight: .bold, design: .rounded))
             }
             .padding(.horizontal, 14)
@@ -187,7 +187,7 @@ private struct SidebarItem: View {
 }
 
 // Tiny code-drawn wisp (matches the app icon).
-// The one true Rewisp mark. Everything (menu bar, main window, splash animation,
+// The one true screenAI mark. Everything (menu bar, main window, splash animation,
 // app icon, landing page) draws this same tapered wisp so the logo reads the same
 // everywhere. The graphite squircle + white wisp + memory dot at the tail.
 struct WispMark: View {
@@ -217,7 +217,7 @@ struct WispMark: View {
 
 struct WispPath: Shape {
     // Canonical wisp centerline — the same tapered sine curve the app icon draws
-    // (rewisp/ui/icon/make_icon.py). Sampled as a smooth polyline.
+    // (screenai/ui/icon/make_icon.py). Sampled as a smooth polyline.
     func path(in rect: CGRect) -> Path {
         var p = Path()
         let steps = 72
@@ -240,9 +240,9 @@ struct WispPath: Shape {
 // MARK: - Today
 
 struct TodayTab: View {
-    @State private var recap: RewispAPI.Recap?
-    @State private var threads: RewispAPI.Threads?
-    @State private var report: RewispAPI.Report?
+    @State private var recap: screenAIAPI.Recap?
+    @State private var threads: screenAIAPI.Threads?
+    @State private var report: screenAIAPI.Report?
     @ObservedObject var status = StatusModel.shared
     @State private var appeared = false
 
@@ -345,9 +345,9 @@ struct TodayTab: View {
             .offset(y: appeared ? 0 : 10)
         }
         .task {
-            recap = try? await RewispAPI.get("recap", as: RewispAPI.Recap.self)
-            threads = try? await RewispAPI.get("threads", as: RewispAPI.Threads.self)
-            report = try? await RewispAPI.get("report", as: RewispAPI.Report.self)
+            recap = try? await screenAIAPI.get("recap", as: screenAIAPI.Recap.self)
+            threads = try? await screenAIAPI.get("threads", as: screenAIAPI.Threads.self)
+            report = try? await screenAIAPI.get("report", as: screenAIAPI.Report.self)
             withAnimation(Theme.spring.delay(0.05)) { appeared = true }
         }
     }
@@ -373,11 +373,11 @@ struct TodayTab: View {
 struct ChatSession: Identifiable {
     let id: String
     let heading: String
-    let messages: [RewispAPI.ChatMessage]
+    let messages: [screenAIAPI.ChatMessage]
 }
 
 struct ChatTab: View {
-    @State private var messages: [RewispAPI.ChatMessage] = []
+    @State private var messages: [screenAIAPI.ChatMessage] = []
     @State private var input = ""
     @State private var asking = false
     @State private var loaded = false
@@ -396,7 +396,7 @@ struct ChatTab: View {
     private var sessions: [ChatSession] {
         guard !messages.isEmpty else { return [] }
         var out: [ChatSession] = []
-        var bucket: [RewispAPI.ChatMessage] = []
+        var bucket: [screenAIAPI.ChatMessage] = []
         var prev: Date?
         func flush() {
             guard let first = bucket.first else { return }
@@ -480,7 +480,7 @@ struct ChatTab: View {
             .padding(16)
         }
         .task {
-            messages = (try? await RewispAPI.get("chats", as: RewispAPI.Chats.self))?.chats ?? []
+            messages = (try? await screenAIAPI.get("chats", as: screenAIAPI.Chats.self))?.chats ?? []
             loaded = true
             focused = true
             // Let the lazy stack lay out, then jump to the newest message.
@@ -551,7 +551,7 @@ struct ChatTab: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func bubble(_ m: RewispAPI.ChatMessage) -> some View {
+    private func bubble(_ m: screenAIAPI.ChatMessage) -> some View {
         HStack(alignment: .bottom, spacing: 10) {
             if m.role == "user" {
                 Spacer(minLength: 80)
@@ -618,12 +618,12 @@ enum VaultLock {
         let ctx = LAContext()
         ctx.localizedFallbackTitle = "Use password"
         try await ctx.evaluatePolicy(.deviceOwnerAuthentication,
-                                     localizedReason: "Unlock your Rewisp Vault")
+                                     localizedReason: "Unlock your screenAI Vault")
     }
 }
 
 struct VaultTab: View {
-    @State private var vault: RewispAPI.Vault?
+    @State private var vault: screenAIAPI.Vault?
     @State private var dropHover = false
     @State private var showNote = false
     @State private var noteTitle = ""
@@ -741,7 +741,7 @@ struct VaultTab: View {
     }
 
     private var vaultPath: String {
-        vault?.path ?? NSHomeDirectory() + "/Rewisp/vault"
+        vault?.path ?? NSHomeDirectory() + "/screenAI/vault"
     }
 
     private var noteSheet: some View {
@@ -757,7 +757,7 @@ struct VaultTab: View {
                 Button("Cancel") { showNote = false }
                 Button("Save") {
                     Task { @MainActor in
-                        let data = try? await RewispAPI.post("vault/note",
+                        let data = try? await screenAIAPI.post("vault/note",
                             body: ["title": noteTitle, "text": noteText])
                         if let data,
                            let err = (try? JSONDecoder().decode([String: String].self, from: data))?["error"] {
@@ -794,7 +794,7 @@ struct VaultTab: View {
         }
         let n = copied
         Task { @MainActor in
-            let data = try? await RewispAPI.post("vault/reindex")
+            let data = try? await screenAIAPI.post("vault/reindex")
             if let data,
                let res = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let refused = res["refused"] as? [[String: String]], !refused.isEmpty {
@@ -809,18 +809,18 @@ struct VaultTab: View {
 
     private func delete(_ name: String) {
         Task { @MainActor in
-            _ = try? await RewispAPI.post("vault/delete", body: ["name": name])
+            _ = try? await screenAIAPI.post("vault/delete", body: ["name": name])
             await reload()
         }
     }
 
     @MainActor private func reload() async {
-        vault = try? await RewispAPI.get("vault", as: RewispAPI.Vault.self)
+        vault = try? await screenAIAPI.get("vault", as: screenAIAPI.Vault.self)
     }
 }
 
 private struct VaultRow: View {
-    let file: RewispAPI.VaultFile
+    let file: screenAIAPI.VaultFile
     let onDelete: () -> Void
     @State private var hovering = false
 
@@ -862,13 +862,13 @@ private struct VaultRow: View {
 // MARK: - Memory
 
 struct MemoryTab: View {
-    @State private var memory: RewispAPI.Memory?
+    @State private var memory: screenAIAPI.Memory?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 TabHeader(title: "Memory",
-                          subtitle: "What Rewisp knows about you. It proposes; only you confirm.")
+                          subtitle: "What screenAI knows about you. It proposes; only you confirm.")
 
                 Card {
                     CardHeader(title: "Confirmed — used in every answer", symbol: "checkmark.seal.fill")
@@ -917,14 +917,14 @@ struct MemoryTab: View {
 
     private func act(_ path: String, _ line: String) {
         Task { @MainActor in
-            _ = try? await RewispAPI.post(path, body: ["line": line])
+            _ = try? await screenAIAPI.post(path, body: ["line": line])
             withAnimation(Theme.spring) {}
             await reload()
         }
     }
 
     @MainActor private func reload() async {
-        memory = try? await RewispAPI.get("memory", as: RewispAPI.Memory.self)
+        memory = try? await screenAIAPI.get("memory", as: screenAIAPI.Memory.self)
     }
 }
 
@@ -969,13 +969,13 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
     var subtitle: String {
         switch self {
-        case .answers: "Choose how Rewisp answers your questions."
+        case .answers: "Choose how screenAI answers your questions."
         case .local: "A private model that runs on your Mac."
         case .cloud: "Free Gemini or your own paid API key."
         case .digest: "The nightly recap of your day."
         case .alerts: "Notifications and search-panel behavior."
-        case .privacy: "What Rewisp never captures."
-        case .data: "Everything stays in ~/Rewisp on this Mac."
+        case .privacy: "What screenAI never captures."
+        case .data: "Everything stays in ~/screenAI on this Mac."
         case .help: "Manual, bug reports, and shortcuts."
         }
     }
@@ -995,11 +995,11 @@ enum SettingsSection: String, CaseIterable, Identifiable {
 
 struct SettingsTab: View {
     @State private var section: SettingsSection = .answers
-    @State private var kill: RewispAPI.KillList?
+    @State private var kill: screenAIAPI.KillList?
     @State private var newApp = ""
     @State private var newPattern = ""
     @State private var exportResult: String?
-    @State private var settings: RewispAPI.Settings?
+    @State private var settings: screenAIAPI.Settings?
     @State private var engine = "auto"
     @State private var geminiKey = ""
     @State private var geminiSaving = false
@@ -1016,9 +1016,9 @@ struct SettingsTab: View {
     @State private var digestRunning = false
     @State private var digestError: String?
     @State private var showReport = false
-    @AppStorage("rewisp.notify") private var notifyMode = "silent"
-    @AppStorage("rewisp.ondevice") private var onDeviceFirst = true
-    @AppStorage("rewisp.formassist") private var formAssist = true
+    @AppStorage("screenai.notify") private var notifyMode = "silent"
+    @AppStorage("screenai.ondevice") private var onDeviceFirst = true
+    @AppStorage("screenai.formassist") private var formAssist = true
     @ObservedObject var status = StatusModel.shared
 
     var body: some View {
@@ -1067,7 +1067,7 @@ struct SettingsTab: View {
                 .buttonStyle(.plain)
             }
             Spacer()
-            Text("Rewisp \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") · MIT")
+            Text("screenAI \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") · MIT")
                 .font(.caption2).foregroundStyle(.tertiary)
                 .padding(.horizontal, 12).padding(.bottom, 14)
         }
@@ -1094,7 +1094,7 @@ struct SettingsTab: View {
 
     private var answersSection: some View {
         Card {
-            CardHeader(title: "How Rewisp answers", symbol: "cpu.fill")
+            CardHeader(title: "How screenAI answers", symbol: "cpu.fill")
 
             HStack {
                 Text("Engine").font(.callout)
@@ -1298,7 +1298,7 @@ struct SettingsTab: View {
                 HStack {
                     Button {
                         Task {
-                            _ = try? await RewispAPI.post("nudge/test")
+                            _ = try? await screenAIAPI.post("nudge/test")
                             testNudgeSent = true
                         }
                     } label: { Label("Send test nudge", systemImage: "paperplane") }
@@ -1370,19 +1370,19 @@ struct SettingsTab: View {
                     row("Wisps", "\(s.captures_total) total · \(String(format: "%.1f", s.db_mb)) MB")
                 }
                 row("Retention", "Wisps ~6 months · summaries forever")
-                row("Location", "~/Rewisp — text only, this Mac only")
+                row("Location", "~/screenAI — text only, this Mac only")
                 HStack(spacing: 10) {
                     Button("Export everything") {
                         Task { @MainActor in
-                            if let data = try? await RewispAPI.post("export"),
+                            if let data = try? await screenAIAPI.post("export"),
                                let res = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                                 exportResult = "Exported \(res["captures"] ?? 0) wisps, \(res["summaries"] ?? 0) summaries"
-                                NSWorkspace.shared.open(URL(fileURLWithPath: res["path"] as? String ?? NSHomeDirectory() + "/Rewisp/export"))
+                                NSWorkspace.shared.open(URL(fileURLWithPath: res["path"] as? String ?? NSHomeDirectory() + "/screenAI/export"))
                             }
                         }
                     }
                     Button("Open data folder") {
-                        NSWorkspace.shared.open(URL(fileURLWithPath: NSHomeDirectory() + "/Rewisp"))
+                        NSWorkspace.shared.open(URL(fileURLWithPath: NSHomeDirectory() + "/screenAI"))
                     }
                 }
                 if let e = exportResult {
@@ -1445,14 +1445,14 @@ struct SettingsTab: View {
     }
     private func save(apps: [String], patterns: [String]) {
         Task { @MainActor in
-            _ = try? await RewispAPI.post("killlist", body: ["apps": apps, "url_patterns": patterns])
+            _ = try? await screenAIAPI.post("killlist", body: ["apps": apps, "url_patterns": patterns])
             await reload()
         }
     }
 
     @MainActor private func reload() async {
-        kill = try? await RewispAPI.get("killlist", as: RewispAPI.KillList.self)
-        if let s = try? await RewispAPI.get("settings", as: RewispAPI.Settings.self) {
+        kill = try? await screenAIAPI.get("killlist", as: screenAIAPI.KillList.self)
+        if let s = try? await screenAIAPI.get("settings", as: screenAIAPI.Settings.self) {
             settings = s
             engine = s.engine
             geminiKey = s.gemini_api_key ?? ""
@@ -1465,7 +1465,7 @@ struct SettingsTab: View {
             digestInterval = s.digest_interval_days
             nudgesEnabled = s.nudges_enabled ?? false
         }
-        if let d = try? await RewispAPI.get("digest/status", as: RewispAPI.DigestStatus.self) {
+        if let d = try? await screenAIAPI.get("digest/status", as: screenAIAPI.DigestStatus.self) {
             digestRunning = d.running
             digestError = d.error
         }
@@ -1495,7 +1495,7 @@ struct SettingsTab: View {
 
     private func saveSettings(_ updates: [String: Any]) {
         Task { @MainActor in
-            _ = try? await RewispAPI.post("settings", body: updates)
+            _ = try? await screenAIAPI.post("settings", body: updates)
         }
     }
 
@@ -1522,8 +1522,8 @@ struct SettingsTab: View {
             "model": customModel.trimmingCharacters(in: .whitespaces),
             "label": customLabel.trimmingCharacters(in: .whitespaces)]]
         Task { @MainActor in
-            _ = try? await RewispAPI.post("settings", body: body)
-            settings = try? await RewispAPI.get("settings", as: RewispAPI.Settings.self)
+            _ = try? await screenAIAPI.post("settings", body: body)
+            settings = try? await screenAIAPI.get("settings", as: screenAIAPI.Settings.self)
         }
     }
 
@@ -1535,12 +1535,12 @@ struct SettingsTab: View {
         geminiSaving = true
         geminiStatus = nil
         Task { @MainActor in
-            _ = try? await RewispAPI.post("settings", body: ["gemini_api_key": key])
-            settings = try? await RewispAPI.get("settings", as: RewispAPI.Settings.self)
+            _ = try? await screenAIAPI.post("settings", body: ["gemini_api_key": key])
+            settings = try? await screenAIAPI.get("settings", as: screenAIAPI.Settings.self)
             // Real call, not just "key is non-empty" — confirms Gemini actually answers.
-            var test: RewispAPI.GeminiTest?
-            if let data = try? await RewispAPI.post("gemini-test", body: [:]) {
-                test = try? JSONDecoder().decode(RewispAPI.GeminiTest.self, from: data)
+            var test: screenAIAPI.GeminiTest?
+            if let data = try? await screenAIAPI.post("gemini-test", body: [:]) {
+                test = try? JSONDecoder().decode(screenAIAPI.GeminiTest.self, from: data)
             }
             geminiSaving = false
             withAnimation(.spring(response: 0.3)) {
@@ -1559,11 +1559,11 @@ struct SettingsTab: View {
         digestRunning = true
         digestError = nil
         Task { @MainActor in
-            _ = try? await RewispAPI.post("digest", body: ["force": true])
+            _ = try? await screenAIAPI.post("digest", body: ["force": true])
             // poll until the worker finishes
             while true {
                 try? await Task.sleep(for: .seconds(3))
-                guard let d = try? await RewispAPI.get("digest/status", as: RewispAPI.DigestStatus.self) else { break }
+                guard let d = try? await screenAIAPI.get("digest/status", as: screenAIAPI.DigestStatus.self) else { break }
                 if !d.running {
                     digestRunning = false
                     digestError = d.error

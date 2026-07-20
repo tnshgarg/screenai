@@ -12,7 +12,7 @@ import re
 
 from . import db, embed
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 _STACKTRACE = re.compile(r"traceback|exception|error:|stack trace|\bat [\w.$]+\(", re.I)
 _MEETING = re.compile(r"\b(zoom|google meet|meet\.google|teams|webex|join now|meeting)\b", re.I)

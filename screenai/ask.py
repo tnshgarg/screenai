@@ -18,7 +18,7 @@ STOPWORDS = {
     "looking", "open", "opened", "remember", "up", "past", "by",
 }
 
-SYSTEM_RULES = """You are Rewisp, answering questions about the user's own screen history.
+SYSTEM_RULES = """You are screenAI, answering questions about the user's own screen history.
 
 Rules, in order of importance:
 1. Answer ONLY from the context below. Never use outside knowledge, never guess.
@@ -804,7 +804,7 @@ def near_misses(conn, question: str, limit: int = 3) -> str | None:
     """Closest moments for a failed search. Re-finding research: ~40% of queries
     are re-finding, and people misremember their own original wording ~30% of the
     time — so a flat "not found" is a dead end exactly when the user needs a
-    nudge. Show the nearest things Rewisp DID see instead."""
+    nudge. Show the nearest things screenAI DID see instead."""
     from . import embed
     from .dejavu import clean_snippet
     qvec = embed.embed_vec(question)

@@ -14,13 +14,13 @@ from datetime import datetime, timedelta, timezone
 from . import config, db, memory
 from .ask import call_llm
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 DIGEST_STATE = config.DATA_DIR / "digest_state.json"
 DIGEST_LOG = config.DATA_DIR / "digest_log.jsonl"
 MAX_INPUT_CHARS = 60_000  # truncate locally rather than making multiple calls
 
-PROMPT_RULES = """You are Rewisp's nightly digest. Analyze the user's day from his own screen
+PROMPT_RULES = """You are screenAI's nightly digest. Analyze the user's day from his own screen
 history below. Answer ONLY from the provided context; do not invent events.
 Return EXACTLY these four markdown sections:
 

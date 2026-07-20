@@ -3,7 +3,7 @@ llama.cpp on Apple Silicon). Handles the model catalog, first-run download with
 progress, delete / re-download, and the on-demand mlx_lm server.
 
 Nothing is bundled in the DMG — the model is chosen for the user's hardware and
-downloaded on first use, cached under ~/Rewisp/models. Fully local, unlimited,
+downloaded on first use, cached under ~/screenAI/models. Fully local, unlimited,
 offline, private. Users can skip it entirely and stay on Apple on-device.
 """
 
@@ -54,7 +54,7 @@ _dl = {"running": False, "model": None, "pct": 0, "error": None, "done": False}
 
 
 def _hf_env() -> dict:
-    """Keep all downloads inside ~/Rewisp/models so delete is contained."""
+    """Keep all downloads inside ~/screenAI/models so delete is contained."""
     env = dict(os.environ)
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     env["HF_HOME"] = str(MODELS_DIR)
@@ -167,7 +167,7 @@ def download_async(model_id: str) -> dict:
         finally:
             _dl["running"] = False
 
-    threading.Thread(target=_work, name="rewisp-model-dl", daemon=True).start()
+    threading.Thread(target=_work, name="screenai-model-dl", daemon=True).start()
     return {"started": True}
 
 

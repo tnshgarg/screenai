@@ -16,7 +16,7 @@ from collections import Counter
 
 from . import config, db, delta
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 _URL = re.compile(r"https?://[^\s)]+")
 _NUM = re.compile(r"[$€£]?\d[\d,]*\.?\d*%?")

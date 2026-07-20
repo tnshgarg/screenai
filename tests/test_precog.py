@@ -1,6 +1,6 @@
 """Precognition — query logging + suggestion ranking."""
 
-from rewisp import db, precog
+from screenai import db, precog
 
 
 class TestLogging:
@@ -50,7 +50,7 @@ class TestSuggest:
 
 class TestSuggestionQuality:
     def test_junk_queries_never_suggested(self):
-        from rewisp.precog import _worth_suggesting
+        from screenai.precog import _worth_suggesting
         assert not _worth_suggesting("test")
         assert not _worth_suggesting("hi")
         assert not _worth_suggesting("asdf asdf asdf")
@@ -61,7 +61,7 @@ class TestSuggestionQuality:
         # a query orthogonal to the screen must not appear in the top slots
         # unless there's nothing else (padding tier).
         import numpy as np
-        from rewisp import db, embed, precog
+        from screenai import db, embed, precog
         v_screen = np.eye(2, embed.DIM, dtype=np.float32)[0]
         v_far = np.eye(2, embed.DIM, dtype=np.float32)[1]
         # two captures on the same page so the Delta template chip fires

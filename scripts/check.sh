@@ -1,11 +1,12 @@
 #!/bin/zsh
-# Rewisp quality gate — everything must pass before code ships.
+# screenAI quality gate — everything must pass before code ships.
 # Run manually (`./scripts/check.sh`) or automatically via the pre-push hook
 # (`./scripts/check.sh --install-hook` once). Fast mode for hooks: SKIP_BUILD=1
 # skips the Swift build (pushes that don't touch ui/ set this automatically).
 set -e
 cd "$(dirname "$0")/.."
-PY=/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+PY=.venv/bin/python3
+[ -x "$PY" ] || PY=/Library/Frameworks/Python.framework/Versions/3.13/bin/python3
 [ -x "$PY" ] || PY=python3
 
 if [[ "$1" == "--install-hook" ]]; then
@@ -32,10 +33,10 @@ echo "── 1/4 python tests ──"
 echo "── 2/4 every module imports ──"
 "$PY" - <<'EOF' || fail "imports"
 import importlib, pathlib
-for f in sorted(pathlib.Path("rewisp").glob("*.py")):
+for f in sorted(pathlib.Path("screenai").glob("*.py")):
     if f.stem.startswith("__"):
         continue
-    importlib.import_module(f"rewisp.{f.stem}")
+    importlib.import_module(f"screenai.{f.stem}")
 print(f"ok — all modules import")
 EOF
 
@@ -44,14 +45,14 @@ if [[ -n "$SKIP_BUILD" ]]; then
     echo "skipped (no ui/ changes)"
 else
     (cd ui && ./build.sh --no-install 2>/dev/null || ./build.sh) | grep -q "built" || fail "swift build"
-    echo "ok — Rewisp.app builds"
+    echo "ok — screenAI.app builds"
 fi
 
 echo "── 4/4 daemon API smoke (if running) ──"
-TOK=$(cat ~/Rewisp/.api_token 2>/dev/null || true)
-if [[ -n "$TOK" ]] && curl -s -m 3 http://127.0.0.1:43117/status -H "X-Rewisp-Token: $TOK" | grep -q "capture_state"; then
+TOK=$(cat ~/screenAI/.api_token 2>/dev/null || true)
+if [[ -n "$TOK" ]] && curl -s -m 3 http://127.0.0.1:43117/status -H "X-ScreenAI-Token: $TOK" | grep -q "capture_state"; then
     for ep in promises series precog nudges memory-layers; do
-        curl -s -m 3 "http://127.0.0.1:43117/$ep" -H "X-Rewisp-Token: $TOK" | grep -qv '"error"' \
+        curl -s -m 3 "http://127.0.0.1:43117/$ep" -H "X-ScreenAI-Token: $TOK" | grep -qv '"error"' \
             || fail "endpoint /$ep"
     done
     echo "ok — live endpoints healthy"

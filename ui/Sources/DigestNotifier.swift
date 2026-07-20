@@ -7,7 +7,7 @@ import UserNotifications
 final class DigestNotifier {
     static let shared = DigestNotifier()
     private var timer: Timer?
-    private let seenKey = "rewisp.digest.notified"
+    private let seenKey = "screenai.digest.notified"
 
     func start() {
         timer = Timer.scheduledTimer(withTimeInterval: 600, repeats: true) { _ in
@@ -17,12 +17,12 @@ final class DigestNotifier {
     }
 
     func checkNow() {
-        guard UserDefaults.standard.string(forKey: "rewisp.notify") == "digest" else { return }
+        guard UserDefaults.standard.string(forKey: "screenai.notify") == "digest" else { return }
         let today = ISO8601DateFormatter.string(from: .now, timeZone: .current,
                                                 formatOptions: [.withFullDate])
         guard UserDefaults.standard.string(forKey: seenKey) != today else { return }
         Task { @MainActor in
-            guard let recap = try? await RewispAPI.get("recap", as: RewispAPI.Recap.self),
+            guard let recap = try? await screenAIAPI.get("recap", as: screenAIAPI.Recap.self),
                   recap.source == "digest" else { return }
             UserDefaults.standard.set(today, forKey: seenKey)
             let center = UNUserNotificationCenter.current()
@@ -33,7 +33,7 @@ final class DigestNotifier {
             content.body = String((recap.recap ?? "Tonight's digest is ready.").prefix(140))
             content.sound = .default
             try? await center.add(UNNotificationRequest(
-                identifier: "rewisp.digest.\(today)", content: content, trigger: nil))
+                identifier: "screenai.digest.\(today)", content: content, trigger: nil))
         }
     }
 }

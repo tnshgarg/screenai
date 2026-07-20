@@ -5,7 +5,7 @@ import SwiftUI
 @MainActor
 final class StatusModel: ObservableObject {
     static let shared = StatusModel()
-    @Published var status: RewispAPI.Status?
+    @Published var status: screenAIAPI.Status?
     @Published var daemonUp = true
     private var timer: Timer?
 
@@ -18,7 +18,7 @@ final class StatusModel: ObservableObject {
 
     func refresh() {
         Task { @MainActor in
-            let s = try? await RewispAPI.get("status", as: RewispAPI.Status.self)
+            let s = try? await screenAIAPI.get("status", as: screenAIAPI.Status.self)
             self.status = s
             self.daemonUp = s != nil
         }

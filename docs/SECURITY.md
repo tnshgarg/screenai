@@ -1,10 +1,10 @@
 # Security notes
 
-Audited 2026-07-08. Threat model: Rewisp stores everything the user sees on screen as text — the database is the most sensitive file on the machine. Adversaries considered: other local processes/users, malicious web pages, exfiltration via the AI calls, and plain operator error.
+Audited 2026-07-08. Threat model: screenAI stores everything the user sees on screen as text — the database is the most sensitive file on the machine. Adversaries considered: other local processes/users, malicious web pages, exfiltration via the AI calls, and plain operator error.
 
 ## Data at rest
 
-- `~/Rewisp/` is `chmod 700` (enforced on every daemon start).
+- `~/screenAI/` is `chmod 700` (enforced on every daemon start).
 - Screenshots are **never written to disk** — `CGDisplayCreateImage` → Vision OCR in memory → released. Only text rows exist.
 - Captures/chats auto-delete after ~6 months (`RETENTION_DAYS`).
 - Vault ingest refuses files matching credential patterns (SSN, card numbers, `password:`, `api_key:`) — refusal happens before anything is indexed.
@@ -13,7 +13,7 @@ Audited 2026-07-08. Threat model: Rewisp stores everything the user sees on scre
 ## Localhost API (127.0.0.1:43117)
 
 - Binds loopback only; nothing listens on external interfaces.
-- **Token-gated**: every request requires `X-Rewisp-Token` matching `~/Rewisp/.api_token` (created `0600`). Without this, any local process — including a malicious web page doing `fetch("http://127.0.0.1:43117/...")` — could read the screen history. Browsers can't read the token file, and the comparison is constant-time (`hmac.compare_digest`).
+- **Token-gated**: every request requires `X-ScreenAI-Token` matching `~/screenAI/.api_token` (created `0600`). Without this, any local process — including a malicious web page doing `fetch("http://127.0.0.1:43117/...")` — could read the screen history. Browsers can't read the token file, and the comparison is constant-time (`hmac.compare_digest`).
 - Request bodies capped at 1 MB; JSON parse failures return empty.
 - `/vault/delete` guards path traversal: name must resolve to a direct child of the vault dir, no `/`, no leading dot.
 - `/vault/note` sanitizes filenames to `[alnum -_]`, max 60 chars.

@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from . import config
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS captures (
@@ -348,7 +348,7 @@ def pagekey_backfill(conn: sqlite3.Connection, batch: int = 2000) -> int:
 
 def latest_page_key(conn: sqlite3.Connection) -> str | None:
     """page_key of the most recent capture — i.e. the page the user is on now
-    (Rewisp never captures its own UI, so this is the app behind the panel)."""
+    (screenAI never captures its own UI, so this is the app behind the panel)."""
     row = conn.execute(
         "SELECT page_key FROM captures WHERE page_key IS NOT NULL "
         "ORDER BY id DESC LIMIT 1").fetchone()

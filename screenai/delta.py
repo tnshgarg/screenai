@@ -1,6 +1,6 @@
 """Delta Memory — "what changed on this page since last time?"
 
-Rewisp already stores every version of a page as text. This diffs two versions
+screenAI already stores every version of a page as text. This diffs two versions
 of the same page (identified by page_key) at the line level, fuzzily (OCR is
 noisy), ignoring churn like clocks and counters.
 
@@ -16,7 +16,7 @@ from urllib.parse import urlsplit, urlunsplit
 from . import config
 
 # Lines matching any of these are ignored on both sides — pure churn that would
-# otherwise drown the real diff. Hot-reloadable via ~/Rewisp/delta_ignore.json.
+# otherwise drown the real diff. Hot-reloadable via ~/screenAI/delta_ignore.json.
 DEFAULT_IGNORE = [
     r"^\d{1,2}:\d{2}(:\d{2})?\s*(am|pm)?$",   # clocks
     r"^\d{1,3}%$",                             # bare percentages (progress bars)

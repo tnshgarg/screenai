@@ -1,15 +1,15 @@
-"""MCP server — expose Rewisp's memory to external AI agents.
+"""MCP server — expose screenAI's memory to external AI agents.
 
-`python3 -m rewisp mcp` speaks the Model Context Protocol over stdio, so Claude
+`python3 -m screenai mcp` speaks the Model Context Protocol over stdio, so Claude
 Code / Claude Desktop / any MCP client can query your screen memory as tools:
 
-    claude mcp add rewisp -- python3 -m rewisp mcp
+    claude mcp add screenai -- python3 -m screenai mcp
 
 Design constraints, deliberately:
 - READ-ONLY. No tool can write, delete, or change settings.
 - LOCAL-ONLY. stdio transport — the client spawns us; there is no listener.
 - NO CLOUD CALLS. The caller is already an AI; tools return retrieval context
-  and deterministic facts for it to reason over. Rewisp's engine chain is never
+  and deterministic facts for it to reason over. screenAI's engine chain is never
   triggered, so an outside agent can never spend your subscriptions.
 - VAULT EXCLUDED. Screen memory is queryable; your identity documents are not
   (flip `mcp_expose_vault` in settings.json if you ever want them).
@@ -25,10 +25,10 @@ import sys
 
 from . import config, db
 
-log = logging.getLogger("rewisp")
+log = logging.getLogger("screenai")
 
 PROTOCOL_VERSION = "2024-11-05"
-SERVER_INFO = {"name": "rewisp", "version": "0.11.0"}
+SERVER_INFO = {"name": "screenai", "version": "0.11.0"}
 
 # The MCP server runs as a separate short-lived process spawned by the client, so
 # the menu-bar app can't see it directly. It records a heartbeat here on every
@@ -77,7 +77,7 @@ TOOLS = [
     {
         "name": "get_context",
         "description": (
-            "Build the full retrieval context Rewisp would use to answer a question "
+            "Build the full retrieval context screenAI would use to answer a question "
             "about the user's digital life: deterministic facts (pinned answers, "
             "tracked numbers, page diffs), matching screen moments, and daily "
             "summaries. Returns context for YOU to reason over — call this first "
@@ -103,7 +103,7 @@ TOOLS = [
     },
     {
         "name": "get_promises",
-        "description": ("Open commitments Rewisp caught off the user's screen — what "
+        "description": ("Open commitments screenAI caught off the user's screen — what "
                         "they said they'd do (with deadlines), and what they're "
                         "waiting on from others."),
         "inputSchema": {"type": "object", "properties": {}},
@@ -278,7 +278,7 @@ HANDLERS = {
 # ── one-click install into MCP clients ───────────────────────────────────────
 
 def _package_dir() -> str:
-    """Directory that CONTAINS the `rewisp` package (so python -m rewisp works)."""
+    """Directory that CONTAINS the `screenai` package (so python -m screenai works)."""
     from pathlib import Path
     return str(Path(__file__).resolve().parent.parent)
 
@@ -288,14 +288,14 @@ def server_entry() -> dict:
     interpreter (it has the deps) and points PYTHONPATH at the package dir."""
     return {
         "command": sys.executable,
-        "args": ["-m", "rewisp", "mcp"],
+        "args": ["-m", "screenai", "mcp"],
         "env": {"PYTHONPATH": _package_dir()},
     }
 
 
 def cli_command() -> str:
-    return (f'claude mcp add rewisp -e PYTHONPATH="{_package_dir()}" '
-            f'-- "{sys.executable}" -m rewisp mcp')
+    return (f'claude mcp add screenai -e PYTHONPATH="{_package_dir()}" '
+            f'-- "{sys.executable}" -m screenai mcp')
 
 
 def client_setups() -> list[dict]:
@@ -303,7 +303,7 @@ def client_setups() -> list[dict]:
     `mcpServers` block; VS Code uses `servers` with an explicit type. CLIs get a
     one-liner. Everything is generated from the one canonical server entry."""
     entry = server_entry()
-    mcp_json = json.dumps({"mcpServers": {"rewisp": entry}}, indent=2)
+    mcp_json = json.dumps({"mcpServers": {"screenai": entry}}, indent=2)
     home = str(config.HOME)
     return [
         {"name": "Claude Desktop", "icon": "menubar.dock.rectangle", "kind": "button",
@@ -321,7 +321,7 @@ def client_setups() -> list[dict]:
          "text": mcp_json, "where": f"{home}/.codeium/windsurf/mcp_config.json",
          "note": "Create/merge this file, then reload Windsurf."},
         {"name": "VS Code", "icon": "chevron.left.forwardslash.chevron.right", "kind": "config",
-         "text": json.dumps({"servers": {"rewisp": {"type": "stdio", **entry}}}, indent=2),
+         "text": json.dumps({"servers": {"screenai": {"type": "stdio", **entry}}}, indent=2),
          "where": ".vscode/mcp.json (in your workspace)",
          "note": "VS Code uses `servers` + a stdio type. Needs GitHub Copilot / Agent mode."},
         {"name": "Gemini CLI", "icon": "sparkle", "kind": "config",
@@ -329,7 +329,7 @@ def client_setups() -> list[dict]:
          "note": "Merge into your Gemini CLI settings under mcpServers."},
         {"name": "ChatGPT", "icon": "bubble.left.and.bubble.right", "kind": "note",
          "text": "", "where": "",
-         "note": "ChatGPT's connectors accept only REMOTE MCP servers (a public https URL). Rewisp is local by design (your memory never leaves the Mac), so it can't be added to ChatGPT without exposing a server to the internet — not recommended."},
+         "note": "ChatGPT's connectors accept only REMOTE MCP servers (a public https URL). screenAI is local by design (your memory never leaves the Mac), so it can't be added to ChatGPT without exposing a server to the internet — not recommended."},
         {"name": "Other client", "icon": "curlybraces", "kind": "config",
          "text": mcp_json, "where": "your client's MCP config",
          "note": "Any client that reads an `mcpServers` block will work with this."},
@@ -346,13 +346,13 @@ def desktop_installed() -> bool:
     if not p.exists():
         return False
     try:
-        return "rewisp" in (json.loads(p.read_text()).get("mcpServers") or {})
+        return "screenai" in (json.loads(p.read_text()).get("mcpServers") or {})
     except (ValueError, OSError):
         return False
 
 
 def install_to_desktop() -> dict:
-    """Merge the rewisp server into Claude Desktop's config (creating it if
+    """Merge the screenai server into Claude Desktop's config (creating it if
     needed). Non-destructive — preserves any other configured servers."""
     p = desktop_config_path()
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -362,7 +362,7 @@ def install_to_desktop() -> dict:
             cfg = json.loads(p.read_text())
         except ValueError:
             cfg = {}
-    cfg.setdefault("mcpServers", {})["rewisp"] = server_entry()
+    cfg.setdefault("mcpServers", {})["screenai"] = server_entry()
     p.write_text(json.dumps(cfg, indent=2))
     return {"ok": True, "path": str(p)}
 
@@ -423,7 +423,7 @@ def handle(msg: dict) -> None:
 def serve() -> None:
     """Blocking stdio loop. One JSON-RPC message per line."""
     logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
-    log.warning("rewisp mcp server ready (read-only, vault %s)",
+    log.warning("screenai mcp server ready (read-only, vault %s)",
                 "EXPOSED" if config.load_settings().get("mcp_expose_vault") else "excluded")
     for line in sys.stdin:
         line = line.strip()
