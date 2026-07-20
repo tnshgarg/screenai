@@ -24,25 +24,25 @@ struct AnimatedWisp: View {
                     .scaleEffect(0.7 + 0.5 * glow)
 
                 RoundedRectangle(cornerRadius: s * 0.28, style: .continuous)
-                    .fill(LinearGradient(colors: [Color(red: 0.16, green: 0.18, blue: 0.25),
-                                                  Color(red: 0.05, green: 0.06, blue: 0.11)],
+                    .fill(LinearGradient(colors: [Color(red: 0.08, green: 0.10, blue: 0.15),
+                                                  Color(red: 0.02, green: 0.02, blue: 0.04)],
                                          startPoint: .top, endPoint: .bottom))
                     .overlay(RoundedRectangle(cornerRadius: s * 0.28, style: .continuous)
-                        .strokeBorder(.white.opacity(0.08)))
+                        .strokeBorder(Theme.accent.opacity(0.15)))
 
                 WispPath()
                     .trim(from: 0, to: progress)
-                    .stroke(LinearGradient(colors: [.white, Color(red: 0.72, green: 0.78, blue: 1)],
-                                           startPoint: .leading, endPoint: .trailing),
+                    .stroke(Theme.wisp,
                             style: StrokeStyle(lineWidth: s * 0.075, lineCap: .round, lineJoin: .round))
                     .padding(pad)
-                    .shadow(color: Theme.accent.opacity(0.9), radius: 6 * progress)
+                    .shadow(color: Theme.accent.opacity(0.8), radius: 8 * progress)
 
-                Circle().fill(.white)
+                Circle().fill(Theme.accent2)
                     .frame(width: s * 0.11, height: s * 0.11)
                     .position(WispPath.point(1, in: inner))
                     .scaleEffect(progress > 0.85 ? 1 : 0)
                     .opacity(progress > 0.85 ? 1 : 0)
+                    .shadow(color: Theme.accent2.opacity(0.9), radius: 4)
             }
         }
         .aspectRatio(1, contentMode: .fit)

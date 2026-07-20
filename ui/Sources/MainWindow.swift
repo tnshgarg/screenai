@@ -199,16 +199,20 @@ struct WispMark: View {
                                height: geo.size.height - 2 * pad)
             ZStack {
                 RoundedRectangle(cornerRadius: s * 0.28, style: .continuous)
-                    .fill(LinearGradient(colors: [Color(red: 0.16, green: 0.18, blue: 0.25),
-                                                  Color(red: 0.05, green: 0.06, blue: 0.11)],
+                    .fill(LinearGradient(colors: [Color(red: 0.08, green: 0.10, blue: 0.15),
+                                                  Color(red: 0.02, green: 0.02, blue: 0.04)],
                                          startPoint: .top, endPoint: .bottom))
+                    .overlay(RoundedRectangle(cornerRadius: s * 0.28, style: .continuous)
+                        .strokeBorder(Theme.accent.opacity(0.15)))
                 WispPath()
-                    .stroke(.white, style: StrokeStyle(lineWidth: max(s * 0.075, 1.4),
+                    .stroke(Theme.wisp, style: StrokeStyle(lineWidth: max(s * 0.075, 1.4),
                                                        lineCap: .round, lineJoin: .round))
                     .padding(pad)
-                Circle().fill(.white)
+                    .shadow(color: Theme.accent.opacity(0.6), radius: 4)
+                Circle().fill(Theme.accent2)
                     .frame(width: s * 0.11, height: s * 0.11)
                     .position(WispPath.point(1, in: inner))
+                    .shadow(color: Theme.accent2.opacity(0.8), radius: 2)
             }
         }
         .aspectRatio(1, contentMode: .fit)

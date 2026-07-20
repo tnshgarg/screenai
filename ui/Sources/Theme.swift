@@ -3,14 +3,14 @@ import SwiftUI
 // screenAI visual system — graphite base, indigo→violet wisp accent (matches the
 // app icon), soft cards, springs everywhere.
 enum Theme {
-    static let accent = Color(red: 0.56, green: 0.64, blue: 1.0)      // #8EA2FF
-    static let accent2 = Color(red: 0.69, green: 0.55, blue: 1.0)     // #B08CFF
+    static let accent = Color(red: 0.12, green: 0.84, blue: 0.87)      // Electric Teal
+    static let accent2 = Color(red: 0.04, green: 0.73, blue: 0.49)     // Emerald Green
     static let wisp = LinearGradient(colors: [accent, accent2],
                                      startPoint: .topLeading, endPoint: .bottomTrailing)
     static let spring = Animation.spring(response: 0.35, dampingFraction: 0.8)
     // Solid graphite backing under translucent surfaces (nudge pill) so text stays
     // legible over any backdrop — bright video, white pages, whatever.
-    static let pillBG = Color(red: 0.09, green: 0.10, blue: 0.15).opacity(0.92)
+    static let pillBG = Color(red: 0.05, green: 0.06, blue: 0.10).opacity(0.94)
 }
 
 // Soft rounded card used across the main window.
@@ -21,10 +21,10 @@ struct Card<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) { content }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(pad)
-            .background(.quaternary.opacity(0.28),
+            .background(.ultraThinMaterial.opacity(0.85),
                         in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(.white.opacity(0.06)))
+                .strokeBorder(.white.opacity(0.08)))
     }
 }
 

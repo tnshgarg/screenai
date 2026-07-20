@@ -27,10 +27,10 @@ final class StatusModel: ObservableObject {
     // Menu bar glyph: filled = capturing, pause badge = paused,
     // hand = kill-list app frontmost, hollow = daemon down.
     var menuSymbol: String {
-        guard daemonUp, let s = status else { return "circle.grid.2x1" }
+        guard daemonUp, let s = status else { return "brain" }
         if s.paused { return "pause.circle" }
-        if s.capture_state == "killlist" { return "hand.raised.circle" }
-        return "circle.grid.2x1.left.filled"
+        if s.capture_state == "killlist" { return "eye.slash.circle" }
+        return "brain.head.profile"
     }
 }
 
