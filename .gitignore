@@ -1,0 +1,22 @@
+# build products
+ui/Rewisp.app/
+dist/
+
+# python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# local scratch (scratchpad test screenshots only — not site/ or docs/img/)
+/panel*.png
+*.log
+
+#local todos
+todo.md
+.gstack/
+
+# headless on-device bench bridge (build artifact)
+ui/AppleAsk
+submission-assets/
